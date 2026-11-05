@@ -58,3 +58,29 @@ La normalisation et la comparaison de formulations (`>=` → `<=`, ordre des con
 - Les clés dupliquées dans un objet JSON (`{"a":1,"a":2}`) sont écrasées silencieusement par `json.loads` ; le validateur ne peut pas les détecter.
 - Comparaison et normalisation de formulations : à faire (nécessaires à la métrique d'exactitude).
 - Le message d'erreur est un texte libre : un code court stable (`"rhs_not_number"`) faciliterait le comptage des échecs à l'évaluation.
+
+## Étape 1C — Compilation JSON → `linprog` (`src/lp_llm/solver.py`)
+
+**Statut : implémenté et exécuté** (`tests/test_solver.py` : 6 tests passés + 1 xfail ; suite complète 68 passés, 1 xfailed).
+
+**Rôle.** `solve_lp_problem(json_string)` valide le JSON (`get_valid_json` puis `respect_problem_perimeter`), le traduit pour `scipy.optimize.linprog` (méthode `highs`) et renvoie un dict `{status, message, solution, objective_value}`. Aucune exécution de code issu du modèle.
+
+### Décisions
+
+- **Traductions** : `max` → minimiser `−c` puis remettre le signe sur la valeur de l'objectif ; `a·x ≥ b` → `−a·x ≤ −b` dans `A_ub` ; `=` → `A_eq` ; bornes `[a, null]` → `(a, None)`.
+- **Statuts** : `"optimal"` (code 0), `"infeasible"` (2), `"unbounded"` (3), `"unsolved"` (1 = limite d'itérations, 4 = difficultés numériques, tout autre code). `"invalid"` est réservé aux entrées rejetées par le schéma. Raison : une sortie mal formée est une faute du modèle, un échec de HiGHS n'en est pas une ; les confondre fausserait les métriques.
+- **Le solveur re-valide l'entrée** au lieu de lui faire confiance : une entrée invalide renvoie `status: "invalid"` avec le message du validateur, sans exception.
+- **`get_valid_json` renvoie `tuple[bool, Any]`** : `json.loads` peut renvoyer dict, liste, nombre, chaîne ou `None`. Le message d'échec est une chaîne, comme les autres rejets.
+- **Tests** : valeurs attendues calculées à la main (commentaire dans chaque test), pas recopiées du solveur. Données choisies pour que l'optimum soit unique et que l'erreur visée change le résultat. Cas : exemple atelier (`[40, 20]`, 2000), `>=` actif (`[4, 6]`, 16), minimisation (`[9, 1]`, 21), borne inférieure `[1, null]` (`[1, 0]`, 2), borne supérieure `[0, 1]` (`[4, 1]`, 11), problème infaisable. Un test `xfail(strict=True)` à valeur attendue fausse vérifie que pytest détecte un écart.
+
+### Erreurs volontaires (tests de mutation, exécutés à la main puis annulés)
+
+- **`>=` sans le signe du `rhs`** (`b_ub.append(rhs)`) : 3 tests échouent (`>=`, minimisation, infaisable). La contrainte devient `a·x ≥ −b`, donc inactive.
+- **`max` sans négation de `c`** : 3 tests échouent (exemple atelier, `>=`, borne supérieure). Le solveur minimise et renvoie l'origine.
+- Les tests qui passent malgré la mutation sont ceux qui n'utilisent pas la partie modifiée (pas de `>=`, ou minimisation). Ces mutations ne sont pas conservées dans la suite de tests.
+
+
+### Points ouverts
+
+- Pas encore de test conservé pour : problème non borné, contrainte `=` (optima multiples : comparer la valeur de l'objectif, pas le vecteur), entrées invalides passées au solveur. Vérifiés une fois à la main.
+- L'évaluation devra calculer l'**objectif de référence** sur la solution prédite (tolérances `1e-6*(1+|rhs|)` et `1e-5*(1+|f_opt|)`) : pas encore implémenté.
