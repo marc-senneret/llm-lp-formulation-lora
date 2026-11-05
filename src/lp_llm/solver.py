@@ -14,7 +14,7 @@ def get_status(status:int) -> str:
     elif status == 3:
         return "unbounded"
     else:
-        return "invalid"
+        return "unsolved"
     
 def solve_lp_problem(json_string: str) -> dict:
     bok, problem_lp = get_valid_json(json_string)
