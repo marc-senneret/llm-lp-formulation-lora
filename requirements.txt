@@ -1,0 +1,26 @@
+# Environnement : Windows 11, miniconda Python 3.11.4, RTX 4060 8 Go, driver 610.88
+# Installation : pip install -r requirements.txt
+# torch CUDA 12.8 : nécessite l'index PyTorch ci-dessous
+--extra-index-url https://download.pytorch.org/whl/cu128
+
+torch==2.11.0+cu128
+
+# Pile fine-tuning
+transformers==5.22.1
+peft==0.21.2
+trl==1.17.1
+accelerate==1.15.0
+datasets==4.8.5
+huggingface_hub==1.33.0
+tokenizers==0.23.3
+safetensors==0.8.0
+# pyarrow 21 : les versions >=22 exigent numpy>=2 (miniconda a numpy 1.26.4)
+pyarrow==21.0.0
+
+# Optimisation / utilitaires
+numpy==1.26.4
+scipy==1.11.3
+psutil==7.0.0
+
+# Notebook de diagnostic
+ipykernel==6.25.0
