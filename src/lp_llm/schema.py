@@ -14,7 +14,7 @@ def get_valid_json(json_string: str) -> tuple[bool, Any]:
         data = json.loads(json_string)
         return True, data
     except (ValueError, TypeError, RecursionError) as e:
-        return False,  f"Invalid JSON: {str(e)}"
+        return False,  f"Invalid JSON: {e}"
 
 def respect_schema(data: Any, schema: dict) -> tuple[bool,str]:
     if not isinstance(data, dict):
