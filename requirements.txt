@@ -24,3 +24,6 @@ psutil==7.0.0
 
 # Notebook de diagnostic
 ipykernel==6.25.0
+
+# Tests
+pytest==9.2.0
