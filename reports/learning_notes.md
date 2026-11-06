@@ -22,8 +22,8 @@ Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
 ### Points ouverts
 
-- Le chargement du modèle et la génération courte n'ont pas encore été testés.
-- La révision exacte du modèle et du tokenizer (`Qwen/Qwen2.5-1.5B-Instruct`) n'est pas encore figée.
+- Le chargement du modèle est exécuté (2A). La génération courte est exécutée une fois (2A) : sortie `invalid`.
+- La révision du modèle et du tokenizer est figée dans le code (2A) : `989aa7980e4cf806f80c7fef2b1adb7bc71aa306`.
 
 ## Étape 1B — Validation du schéma (`src/lp_llm/schema.py`)
 
@@ -84,3 +84,52 @@ La normalisation et la comparaison de formulations (`>=` → `<=`, ordre des con
 
 - Pas encore de test conservé pour : problème non borné, contrainte `=` (optima multiples : comparer la valeur de l'objectif, pas le vecteur), entrées invalides passées au solveur. Vérifiés une fois à la main.
 - L'évaluation devra calculer l'**objectif de référence** sur la solution prédite (tolérances `1e-6*(1+|rhs|)` et `1e-5*(1+|f_opt|)`) : pas encore implémenté.
+
+## Étape 2A — Smoke test du modèle (`smoke_test.ipynb`)
+
+**Statut : chargement et génération courte exécutés, une fois chacun, kernel redémarré avant la mesure. La sortie du modèle est `invalid`. Le solveur a été testé séparément sur un JSON corrigé à la main : c'est un test du solveur, pas une sortie du modèle.**
+
+### Mesures (exécutées)
+
+Chargement propre (kernel redémarré, révision figée) :
+- Avant chargement : VRAM allouée par torch 0,00 Go, réservée 0,00 Go, libre 6,94 Go sur 8.
+- Après chargement : allouée 2,88 Go, réservée 2,93 Go, libre 4,01 Go.
+- Devices des paramètres : `{device(type='cuda', index=0)}` (aucun paramètre sur CPU). `model.hf_device_map` est absent (`getattr` renvoie `None`) : la répartition est vérifiée par les devices des paramètres.
+- Temps de chargement : 7,02 s et 7,44 s pour deux chargements propres ; 24,41 s pour un chargement ultérieur, avec le même cache. Variabilité du disque ou du cache, pas du modèle.
+- Paramètres : 1 543 714 304 (≈ 1,54 B), 28 couches, `hidden_size` 1536, contexte max 32 768. Vocabulaire `len(tokenizer)` = 151 665 ; EOS `<|im_end|>` (151645) ; PAD `<|endoftext|>` (151643).
+
+Génération (prompt v2) :
+- Prompt : système avec un exemple JSON, règles 1 à 13, interdiction des fences et des `//`, consigne « Answer only with the valid JSON ». Utilisateur : énoncé de la boulangerie avec les chiffres (farine 20 kg/jour, 8 h/jour, 500 g et 200 g de farine, 30 et 10 min, profit 12 € et 4 €). Ce prompt est celui mesuré ; les versions précédentes ne sont pas conservées.
+- Template : avec `tokenize=False`, le texte rendu contient `<|im_start|>`, les deux messages et `<|im_start|>assistant` en fin de chaîne.
+- Décodage glouton, `max_new_tokens=256` : 122 nouveaux tokens, dernier token `<|im_end|>` (151645), fin par EOS, donc pas de troncature.
+- Sortie brute (non nettoyée) : bloc ` ```json `, `variables` correct, objectif `max` `[12, 4]` correct, contrainte de farine `[500, 200] ≤ 20` (grammes avec des kilogrammes : erreur de formulation), contrainte de temps `[30, 10] ≤ 8 * 60` (expression, pas un nombre), commentaire `//`.
+- `solve_lp_problem(sortie brute)` : `{'status': 'invalid', 'message': 'Invalid JSON: Expecting value: line 1 column 1 (char 0)'}`. Le JSON est rejeté au premier caractère, à cause de la fence.
+
+Solveur sur un JSON corrigé à la main (test du solveur) :
+- Coefficients ramenés à des kilogrammes et des minutes : `[0.5, 0.2] ≤ 20`, `[30, 10] ≤ 480`.
+- Résultat : `optimal`, objectif `192.0`, solution `[16.0, 0.0]`.
+- Calcul à la main : l'objectif vaut 0,4 × (30·x1 + 10·x2), la contrainte de farine n'est jamais active, et la valeur 192 est atteinte sur tout le segment entre (16, 0) et (0, 48). Le solveur renvoie un point parmi ces optima : pour l'évaluation, on compare la valeur de l'objectif, pas le vecteur.
+
+### Décisions
+
+- **Cache Hugging Face dans le dépôt** : `HF_HOME = <dépôt>/.hf_cache` (2,9 Go), défini avant l'import de `transformers`. `.hf_cache/` est ignoré par Git.
+- **Révision figée** : `989aa7980e4cf806f80c7fef2b1adb7bc71aa306`, passée à `from_pretrained` pour le tokenizer et pour le modèle.
+- **Import du solveur** : `sys.path.insert(0, <dépôt>/src)`, puis `from lp_llm.solver import solve_lp_problem`.
+- **Prompt v2 figé** pour le baseline. La sortie n'est pas réparée : elle compte comme `invalid`.
+- **Pas de décodage contraint à ce stade** : il garantirait le format et masquerait exactement ce que la métrique de validité structurelle doit mesurer.
+
+### Remarques
+
+- **L'écart nvidia-smi / torch de 1A est expliqué.** Avant tout chargement, 8 − 6,94 = 1,06 Go sont déjà occupés (contexte CUDA et autres processus). Après chargement, torch réserve 2,93 Go, et il reste 4,01 Go libres : 1,06 + 2,93 ≈ 4,0 Go de moins que 8 Go. Pas de surcoût float32 : 2,88 Go = 1,54·10⁹ × 2 octets.
+- **Marge pour l'entraînement : 4,01 Go libres.** Les activations et l'état de l'optimiseur LoRA devront tenir là-dedans : à mesurer au smoke test d'entraînement.
+- **Une mesure faite sur un kernel qui contient déjà le modèle est fausse.** Un second chargement par-dessus donne VRAM libre 0,68 Go et réservée 5,81 Go. Toujours redémarrer le kernel avant une mesure de chargement.
+- **Piège f-string** : `f"{{p.device for p in ...}}"` affiche le texte littéral au lieu du résultat. Il faut `{set(p.device for p in model.parameters())}`.
+- `pad_token` ≠ `eos_token` : masquer le padding ne masquera pas la fin de réponse. À vérifier lors de l'inspection des masques.
+- `len(tokenizer)` (151 665) peut être inférieur à `config.vocab_size` (matrice d'embeddings arrondie) : normal, ne pas redimensionner.
+
+### Points ouverts
+
+- Smoke test d'entraînement : non fait.
+- Génération : une seule exécution, sur un seul énoncé. Aucune statistique.
+- Le baseline doit être répété sur le jeu de validation avant toute conclusion.
+- Comparaison de formulations et objectif de référence : pas encore implémentés (voir 1C).
