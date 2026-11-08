@@ -129,7 +129,46 @@ Solveur sur un JSON corrigé à la main (test du solveur) :
 
 ### Points ouverts
 
-- Smoke test d'entraînement : non fait.
+- Smoke test d'entraînement : fonctionnel mais déborde de la VRAM (voir 2B).
 - Génération : une seule exécution, sur un seul énoncé. Aucune statistique.
 - Le baseline doit être répété sur le jeu de validation avant toute conclusion.
 - Comparaison de formulations et objectif de référence : pas encore implémentés (voir 1C).
+
+## Étape 2B — Smoke test d'entraînement LoRA (`train_smoke_test.ipynb`)
+
+**Statut : exécuté (kernel redémarré, graine fixée). La boucle, le masque et les gradients fonctionnent ; la mémoire ne tient pas dans la VRAM seule (débordement d'environ 1,5 Go en mémoire GPU partagée).** Un seul exemple, répété 5 pas : c'est un test de plomberie, pas un résultat d'entraînement.
+
+### Tokenisation et masque (exécuté)
+
+- **Paire d'entraînement** : prompt v2 (même `system` et même `user` que 2A) + cible `json.dumps(json.loads(lp_json))`, soit le JSON corrigé à la main de 2A sur une seule ligne. La cible est un exemple de test de la plomberie, pas une donnée du corpus ; elle passe `solve_lp_problem` (`optimal`, assertion dans la cellule).
+- **Méthode** : `apply_chat_template(messages, tokenize=False, add_generation_prompt=True)` pour le prompt, `apply_chat_template(messages + [assistant: cible], tokenize=False)` pour la conversation complète, puis `tokenizer(..., add_special_tokens=False)` sur les deux (les balises spéciales sont déjà dans le texte).
+- **Contrôles (assertions)** : le texte complet commence par le texte du prompt ; les ids du prompt sont un préfixe exact des ids complets (la frontière ne coupe pas de token) ; `len(labels) == len(full_ids)`.
+- **Labels** : `-100` sur les 705 tokens du prompt ; partie entraînable de 100 tokens = la cible + `<|im_end|>`. Total : 805 tokens.
+- **Vérification par décodage** des seuls tokens entraînables : exactement la cible suivie de `<|im_end|>`, rien du prompt.
+
+### LoRA et boucle (exécuté)
+
+- `peft==0.21.2` : `LoraConfig(r=16, lora_alpha=32, lora_dropout=0.05, target_modules=["q_proj", "k_proj", "v_proj", "o_proj"], bias="none", task_type="CAUSAL_LM")`, puis `get_peft_model`.
+- Noms des modules vérifiés sur le modèle : `q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`.
+- **Paramètres entraînables : 4 358 144 (0,28 %)**, vérifié à la main : par couche, `q_proj` et `o_proj` 16 × (1536 + 1536) = 49 152 chacun, `k_proj` et `v_proj` 16 × (1536 + 256) = 28 672 chacun (sortie 256 : attention à têtes K/V groupées), soit 155 648 × 28 couches.
+- Boucle à la main, sans `trl` : `peft_model.train()`, `AdamW` sur les paramètres `requires_grad`, lr 1e-4, batch 1, 5 pas, `torch.manual_seed(42)` avant la boucle.
+- **Pertes** (calculées avant la mise à jour de chaque pas) : 0,1837 → 0,1565 → 0,1096 → 0,0684 → 0,0382. La baisse sur un exemple répété montre que les gradients atteignent les adaptateurs ; c'est de la mémorisation, pas une mesure de qualité.
+- **VRAM pic** (`max_memory_allocated`) : **7,83 Go**, alors que 6,94 Go seulement sont libres avant chargement. Le Gestionnaire des tâches montre ≈ 1,5 Go de mémoire GPU partagée pendant la boucle : le pilote Windows déborde en RAM système au lieu d'échouer.
+
+### Décisions
+
+- **`<|im_end|>` est entraînable** : c'est lui qui apprend au modèle à s'arrêter.
+- **Le `\n` final du template est retiré** de l'entrée et des labels : la séquence s'arrête sur `<|im_end|>`. L'entrée diffère donc du texte rendu par le template de ce seul caractère ; sans effet à l'inférence, qui s'arrête sur `<|im_end|>`.
+- **LoRA sur l'attention seulement** (q, k, v, o) pour le smoke test ; le MLP n'est pas adapté.
+- **Boucle écrite à la main** pour voir chaque étape ; `trl` plus tard.
+
+
+### Remarques
+
+- **Checkpointing de gradient (vérifié dans le code installé, transformers 5.22.1, pas encore testé)** : `gradient_checkpointing_enable(gradient_checkpointing_kwargs=None, every_n_layers=1, offload=False)`. Par défaut `use_reentrant=False` (passé à `torch.utils.checkpoint.checkpoint`), et `enable_input_require_grads()` est appelé automatiquement pour un modèle à `input_ids`. `use_cache` est un argument du `forward` (`Qwen2Model`, `Qwen2ForCausalLM`), forcé à `False` avec un avertissement quand le checkpointing est actif. `PeftModel` transmet l'appel au modèle de base (`__getattr__`). Le checkpointing réduit les activations, pas les poids, l'optimiseur ni les logits.
+
+### Points ouverts
+
+- Faire tenir l'entraînement en VRAM : tester d'abord le checkpointing de gradient, mesurer VRAM pic, mémoire partagée et durée d'un pas, et vérifier que les paramètres LoRA reçoivent un gradient. Pistes suivantes, une par une : `offload=True`, perte limitée aux positions de la cible (logits 151 665 × 805), QLoRA en dernier recours.
+- La durée d'un pas n'est pas mesurée.
+- Le smoke test utilise un seul exemple ; le corpus (`generate.py`) et les splits restent à faire.
