@@ -1,0 +1,70 @@
+{
+  "config_version": 1,
+  "master_seed": 42,
+  "numeric_sampling": {
+    "distribution": "uniform_integer",
+    "inclusive_bounds": true,
+    "independent_draws": true,
+    "constraint_coefficients": {
+      "min": 1,
+      "max": 9
+    },
+    "objective_coefficients": {
+      "min": 1,
+      "max": 50
+    },
+    "rhs": {
+      "min": 20,
+      "max": 200
+    }
+  },
+  "quotas": {
+    "train": {
+      "production": {
+        "2_constraints": 250,
+        "3_constraints": 250
+      },
+      "mixing": {
+        "2_constraints": 250,
+        "3_constraints": 250
+      }
+    },
+    "validation": {
+      "production": {
+        "2_constraints": 25,
+        "3_constraints": 25
+      },
+      "mixing": {
+        "2_constraints": 25,
+        "3_constraints": 25
+      }
+    },
+    "test": {
+      "production": {
+        "2_constraints": 50,
+        "3_constraints": 50
+      },
+      "mixing": {
+        "2_constraints": 50,
+        "3_constraints": 50
+      }
+    }
+  },
+  "admission": {
+    "required_solver_status": "optimal",
+    "feasibility_tolerance": {
+      "absolute": 1e-6,
+      "relative": 1e-6
+    },
+    "active_constraint_tolerance": {
+      "absolute": 1e-6,
+      "relative": 1e-6
+    },
+    "origin_tolerance": 1e-8,
+    "require_active_constraint": true
+  },
+  "generation": {
+    "max_attempts_per_example": 100,
+    "on_attempt_limit": "error"
+  }
+}

@@ -136,7 +136,7 @@ Solveur sur un JSON corrigé à la main (test du solveur) :
 
 ## Étape 2B — Smoke test d'entraînement LoRA (`train_smoke_test.ipynb`)
 
-**Statut : exécuté (kernel redémarré, graine fixée). La boucle, le masque et les gradients fonctionnent ; la mémoire ne tient pas dans la VRAM seule (débordement d'environ 1,5 Go en mémoire GPU partagée).** Un seul exemple, répété 5 pas : c'est un test de plomberie, pas un résultat d'entraînement.
+**Statut : exécuté (kernel redémarré, graine fixée). La boucle, le masque et les gradients fonctionnent. Sans checkpointing de gradient, la mémoire déborde de la VRAM (≈ 1,5 Go en mémoire GPU partagée) ; avec, le pic tombe à 4,62 Go.** Un seul exemple, répété 5 pas : c'est un test de plomberie, pas un résultat d'entraînement.
 
 ### Tokenisation et masque (exécuté)
 
@@ -155,20 +155,28 @@ Solveur sur un JSON corrigé à la main (test du solveur) :
 - **Pertes** (calculées avant la mise à jour de chaque pas) : 0,1837 → 0,1565 → 0,1096 → 0,0684 → 0,0382. La baisse sur un exemple répété montre que les gradients atteignent les adaptateurs ; c'est de la mémorisation, pas une mesure de qualité.
 - **VRAM pic** (`max_memory_allocated`) : **7,83 Go**, alors que 6,94 Go seulement sont libres avant chargement. Le Gestionnaire des tâches montre ≈ 1,5 Go de mémoire GPU partagée pendant la boucle : le pilote Windows déborde en RAM système au lieu d'échouer.
 
+### Checkpointing de gradient (exécuté, même kernel)
+
+- Protocole : après le run standard, adaptateurs LoRA remis à leur état initial (`state_dict` sauvegardé avant le premier run), nouvel optimiseur, `gc.collect()` + `torch.cuda.empty_cache()` + `reset_peak_memory_stats()`, même graine, puis `peft_model.gradient_checkpointing_enable()` (valeurs par défaut).
+- **Pertes identiques** aux deux runs (0,1837 → 0,1541 → 0,1090 → 0,0672 → 0,0365) : la remise à zéro fonctionne, le checkpointing ne change pas le calcul et les gradients atteignent bien les adaptateurs.
+- **VRAM pic : 7,84 Go → 4,62 Go**, sous les 6,94 Go libres.
+- **Temps des 5 pas : 9,95 s → 3,11 s.** Par construction, le checkpointing ajoute un forward par pas et serait plus lent si tout tenait en VRAM. Ici il est plus rapide parce qu'il supprime le débordement en RAM système, dont les accès sont bien plus lents. Le premier run contient aussi l'échauffement : l'écart n'est pas un coût du checkpointing seul, et on n'ira pas plus loin.
+- L'avertissement `use_cache=True is incompatible with gradient checkpointing. Setting use_cache=False` confirme que le checkpointing est actif ; sans conséquence.
+
 ### Décisions
 
 - **`<|im_end|>` est entraînable** : c'est lui qui apprend au modèle à s'arrêter.
 - **Le `\n` final du template est retiré** de l'entrée et des labels : la séquence s'arrête sur `<|im_end|>`. L'entrée diffère donc du texte rendu par le template de ce seul caractère ; sans effet à l'inférence, qui s'arrête sur `<|im_end|>`.
 - **LoRA sur l'attention seulement** (q, k, v, o) pour le smoke test ; le MLP n'est pas adapté.
 - **Boucle écrite à la main** pour voir chaque étape ; `trl` plus tard.
+- **Checkpointing de gradient activé pour l'entraînement** : il fait tenir l'entraînement en VRAM sur la RTX 4060, ce qui évite le débordement en RAM ; QLoRA n'est pas nécessaire à ce stade.
 
 
 ### Remarques
 
-- **Checkpointing de gradient (vérifié dans le code installé, transformers 5.22.1, pas encore testé)** : `gradient_checkpointing_enable(gradient_checkpointing_kwargs=None, every_n_layers=1, offload=False)`. Par défaut `use_reentrant=False` (passé à `torch.utils.checkpoint.checkpoint`), et `enable_input_require_grads()` est appelé automatiquement pour un modèle à `input_ids`. `use_cache` est un argument du `forward` (`Qwen2Model`, `Qwen2ForCausalLM`), forcé à `False` avec un avertissement quand le checkpointing est actif. `PeftModel` transmet l'appel au modèle de base (`__getattr__`). Le checkpointing réduit les activations, pas les poids, l'optimiseur ni les logits.
+- **Checkpointing de gradient (API vérifiée dans le code installé, transformers 5.22.1)** : `gradient_checkpointing_enable(gradient_checkpointing_kwargs=None, every_n_layers=1, offload=False)`. Par défaut `use_reentrant=False` (passé à `torch.utils.checkpoint.checkpoint`), et `enable_input_require_grads()` est appelé automatiquement pour un modèle à `input_ids`. `use_cache` est un argument du `forward` (`Qwen2Model`, `Qwen2ForCausalLM`), forcé à `False` avec un avertissement quand le checkpointing est actif. `PeftModel` transmet l'appel au modèle de base (`__getattr__`). Le checkpointing réduit les activations, pas les poids, l'optimiseur ni les logits.
 
 ### Points ouverts
 
-- Faire tenir l'entraînement en VRAM : tester d'abord le checkpointing de gradient, mesurer VRAM pic, mémoire partagée et durée d'un pas, et vérifier que les paramètres LoRA reçoivent un gradient. Pistes suivantes, une par une : `offload=True`, perte limitée aux positions de la cible (logits 151 665 × 805), QLoRA en dernier recours.
-- La durée d'un pas n'est pas mesurée.
+- Mesuré pour batch 1 et 805 tokens. Le batch effectif ≈ 16 prévu (accumulation de gradient ou vrai batch) reste à vérifier en mémoire.
 - Le smoke test utilise un seul exemple ; le corpus (`generate.py`) et les splits restent à faire.
