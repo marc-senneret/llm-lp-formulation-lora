@@ -3,6 +3,30 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 18 novembre 2026 — Revue du projet
+
+### Vérifications exécutées
+
+- `python -m pytest -q -p no:cacheprovider` sous Python 3.13.5 et SciPy 1.16.1 : 79 tests réussis, 1 échec attendu. Les notebooks GPU ont été relus sans nouvelle exécution.
+- Diagnostic numérique : pour chaque combinaison famille × nombre de contraintes, tirer une instance pour chacune des graines 10 000 à 10 249 avec `sample_reference` et `configs/generate_v1.json`, puis résoudre et appliquer `check_admission`. Les 1 000 instances ont été admises. Une solution est classée sur un axe si au moins une composante est inférieure ou égale à `1e-6`.
+
+| Famille | Contraintes | Sur un axe | Deux variables positives |
+| --- | ---: | ---: | ---: |
+| Production | 2 | 220 | 30 |
+| Production | 3 | 201 | 49 |
+| Mélange | 2 | 219 | 31 |
+| Mélange | 3 | 185 | 65 |
+| Total | | **825** | **175** |
+
+- Deux défauts reproduits dans la chaîne de validation. Un champ objectif avec `"sense": "min", "sense": "max"` passe et la seconde valeur est retenue. Un coefficient objectif entier égal à `10**320` passe le schéma, puis la conversion pour le solveur lève `OverflowError`.
+- Les deux témoins demandent de déterminer des quantités. La consigne de formulation sera rendue explicite avant leur qualification. Le générateur associe systématiquement chaque famille au même sens d'objectif et d'inégalité. Cette association motive des cas humains où les contraintes ont des sens différents dans un même énoncé.
+
+### Suite retenue
+
+- Éprouver le vérificateur sur des cas de développement avant d'élargir le corpus. Distinguer conformité du JSON, exactitude de la formulation, résolution du problème prédit et succès sur la référence. Utiliser des erreurs connues, des formulations équivalentes et des optima multiples. Corriger les deux défauts de validation reproduits.
+- Viser une première expérience de 300 exemples d'entraînement, 60 de validation, 80 de test synthétique et 20 cas humains indépendants. Conserver des lignées disjointes et une couverture des deux géométries observées. Ces volumes sont des cibles de planification. Les configurations et fichiers du corpus restent à préparer.
+- Réutiliser le smoke test PyTorch. Vérifier le masque avec du padding et des longueurs différentes, sauvegarder puis recharger l'adaptateur. Produire une comparaison appariée sous un protocole figé et examiner les gains et les régressions par exemple.
+
 ## 18 novembre 2026 — Simplification du contrat des templates
 
 ### Phase 2 — Pilote numérique implémenté et exécuté
@@ -202,7 +226,7 @@ Solveur sur un JSON corrigé à la main (test du solveur) :
 - Protocole : après le run standard, adaptateurs LoRA remis à leur état initial (`state_dict` sauvegardé avant le premier run), nouvel optimiseur, `gc.collect()` + `torch.cuda.empty_cache()` + `reset_peak_memory_stats()`, même graine, puis `peft_model.gradient_checkpointing_enable()` (valeurs par défaut).
 - **Pertes identiques** aux deux runs (0,1837 → 0,1541 → 0,1090 → 0,0672 → 0,0365) : la remise à zéro fonctionne, le checkpointing ne change pas le calcul et les gradients atteignent bien les adaptateurs.
 - **VRAM pic : 7,84 Go → 4,62 Go**, sous les 6,94 Go libres.
-- **Temps des 5 pas : 9,95 s → 3,11 s.** Par construction, le checkpointing ajoute un forward par pas et serait plus lent si tout tenait en VRAM. Ici il est plus rapide parce qu'il supprime le débordement en RAM système, dont les accès sont bien plus lents. Le premier run contient aussi l'échauffement : l'écart n'est pas un coût du checkpointing seul, et on n'ira pas plus loin.
+- **Temps moyen par pas sur cinq pas : 9,95 s → 3,11 s.** La boucle retourne `sum(times) / len(times)` avec synchronisation CUDA, malgré le libellé « tps 5 boucles » dans le notebook. L'ordre des essais laisse un effet d'échauffement possible. La baisse du temps est compatible avec une réduction du débordement en RAM système. Le protocole ne permet pas d'isoler la contribution de ces deux effets.
 - L'avertissement `use_cache=True is incompatible with gradient checkpointing. Setting use_cache=False` confirme que le checkpointing est actif ; sans conséquence.
 
 ### Décisions

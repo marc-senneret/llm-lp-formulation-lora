@@ -1,8 +1,16 @@
-# Plan — `generate.py` : corpus, templates assistés par LLM et splits
+# Plan de génération du corpus
 
 **Statut au 18 novembre 2026 : étape 1 documentée et vérifiée techniquement ; étape 2 implémentée et pilote exécuté, relecture humaine en attente.** Configuration et contrat écrits, un exemple complet par famille rendu et résolu (voir `reports/contract_examples_v1.md`). Le pilote courant fournit dix exemples dans `runs/generation_pilot_v2/` ; la version 1 est conservée. Les étapes 3 à 8 restent à exécuter ; les candidats ne sont pas encore admis dans la bibliothèque. Le corpus final n'est pas généré.
 
 **Mise à jour : 17 novembre 2026.** Marc autorise la rédaction de templates candidats par un LLM, puis leur filtrage et leur validation. Cette décision complète le cadrage initial, qui ne nécessitait pas de LLM externe. Le LLM produit des données textuelles, pas du code à exécuter.
+
+## Priorité après la revue du 18 novembre 2026
+
+Le premier livrable expérimental est une comparaison du modèle initial et du même modèle adapté par LoRA sur des énoncés tenus à l'écart de l'entraînement. Construire le vérificateur sur quelques exemples de développement avant d'élargir la bibliothèque. Réutiliser les deux témoins du pilote après relecture de Marc.
+
+- Pour chaque réponse brute, enregistrer quatre résultats avec tous les exemples au dénominateur : validité du JSON et du schéma, exactitude de la formulation après normalisation documentée, succès du solveur sur le problème prédit, succès de la solution prédite sur le problème de référence. Pour ce dernier, vérifier la faisabilité et calculer l'objectif **de référence** au point prédit. Compter les sorties invalides ou tronquées comme des échecs, sans réparation.
+- Éprouver le vérificateur avec un second membre erroné qui laisse l'optimum intact, des lignes réordonnées ou mises à l'échelle, et deux solutions distinctes d'un même problème à optima multiples. Rejeter les clés JSON dupliquées et vérifier qu'un entier impossible à convertir pour le solveur produit un diagnostic sans interrompre le lot.
+- Valider le masque de loss sur un lot de longueurs différentes, puis sauvegarder et recharger l'adaptateur dans une session propre. Sélectionner le checkpoint et régler le prompt sur la validation. Figer ensuite le prompt, le décodage et le vérificateur. Comparer les deux modèles sur les mêmes cas et conserver les réponses brutes, les gains et les régressions par exemple.
 
 ## Principe et périmètre
 
@@ -17,7 +25,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 - **Production** : maximiser un profit, contraintes de ressources `<=`.
 - **Mélange/achat** : minimiser un coût, exigences `>=`. Éviter les proportions, pourcentages et volumes totaux imposés qui ajouteraient des relations hors de ce contrat.
 - Petits entiers positifs, unités cohérentes sans conversion.
-- Cibles initiales : 1 000 train, 100 validation, 200 test synthétique, à parts égales entre familles ; 20 cas humains séparés. Réduire les volumes si nécessaire, sans retirer les contrôles.
+- Cibles proposées pour la première expérience : 300 train, 60 validation, 80 test synthétique, répartis à parts égales entre les quatre combinaisons famille × nombre de contraintes, puis 20 cas humains à part. Reporter ces cibles dans une configuration versionnée au gel du corpus. Les quotas actuellement inscrits dans `configs/generate_v1.json` restent ceux du cadrage initial.
 
 ## Étape 1 — Fixer le contrat de génération
 
@@ -29,7 +37,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 2. Partir des plages suivantes : coefficients de contraintes 1–9, profits/coûts 1–50, seconds membres 20–200. Ces choix initiaux ne garantissent pas à eux seuls la diversité.
 3. Définir les champs numériques à trous autorisés, par exemple `{objective_x1}`, `{objective_x2}`, `{constraint_1_x1}`, `{constraint_1_x2}`, `{rhs_1}`, puis les champs des autres contraintes. Les produits, ressources et unités sont écrits directement dans chaque template et décrits dans ses métadonnées. Aucun champ textuel variable en v1.
 4. Fixer pour chaque template le nombre de contraintes et la correspondance entre leurs champs, leur ordre dans le texte et les lignes de référence. Une présentation par produit est autorisée si cette correspondance reste explicite.
-5. Rendre obligatoires : définition des variables, continuité, non-négativité, objectif, tous les coefficients et toutes les limites. Interdire les conditions mathématiques supplémentaires et implicites.
+5. Rendre obligatoires : définition des variables, continuité, non-négativité, objectif, tous les coefficients et toutes les limites. Demander explicitement de formuler le programme linéaire. Corriger les deux témoins qui demandent actuellement de déterminer les quantités, puis relire les nouveaux rendus. Interdire les conditions mathématiques supplémentaires et implicites.
 6. Fixer le format des candidats : `template_id`, `lineage_id`, famille, nombre de contraintes, texte à trous numériques, définition et unités des variables, objectif, unités et correspondance des contraintes, ordre de première apparition dans le texte et statut de qualification. Ces métadonnées restent hors de l'énoncé rendu. Chaque candidat est autonome, sans référence à un catalogue de scénarios.
 
 **Livrable :** configuration et contrat documentés, avec un exemple complet par famille.
@@ -60,7 +68,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 1. Préparer un prompt versionné : contrat, champs autorisés, deux familles et exemples de développement. Ne pas fournir les cas du test humain.
 2. Demander des objets structurés contenant uniquement les données du template. Interdire les nombres mathématiques écrits en dur, les champs inventés, les conversions d'unités et les contraintes supplémentaires.
 3. Demander de la diversité : présentation par produit ou ressource, ordre des informations, phrases courtes ou regroupées, vocabulaire et contextes plausibles. Changer seulement les noms de produits ne crée pas une nouvelle structure linguistique.
-4. Commencer avec dix candidats par famille. Après qualification de ce lot, compléter les structures manquantes. Viser dix lignées indépendantes acceptées par famille : six train, deux validation et deux test.
+4. Produire les candidats par petits lots et compléter les structures manquantes après la première qualification. Pour chaque combinaison famille × nombre de contraintes, viser deux lignées indépendantes pour le train, une pour la validation et une pour le test.
 5. Conserver requêtes et réponses brutes, modèle et version disponibles, date, paramètres et relations parent/enfant. Une paraphrase ou une correction garde la même `lineage_id`. Regrouper aussi les candidats quasi identiques sans parent déclaré.
 6. La génération peut se faire en conversation ou via un accès déjà autorisé. Aucun service particulier n'est requis. Un appel payant exige une instruction explicite.
 
@@ -99,7 +107,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 **À faire**
 
 1. Examiner les ressemblances entre candidats : même construction avec synonymes, même ordre des faits, substitutions de contexte. Regrouper les variantes dans une même lignée. Cette revue réduit le risque de fuite sans prouver une indépendance linguistique totale.
-2. Affecter les lignées acceptées aux splits **avant de générer le corpus** : cible par famille de six train, deux validation et deux test. Toutes les variantes d'une lignée vont dans le même split.
+2. Affecter les lignées acceptées aux splits **avant de générer le corpus**, avec les cibles par famille et par nombre de contraintes définies à l'étape 3. Toutes les variantes d'une lignée vont dans le même split.
 3. Écrire l'affectation dans un registre versionné ; vérifier que chaque `template_id` et chaque `lineage_id` possède un seul split.
 4. Équilibrer autant que possible contextes, deux/trois contraintes et présentations. Le vocabulaire des contextes peut rester partagé entre splits ; documenter cette limite.
 5. Geler registre, templates et configuration avec leurs SHA-256. Ne plus modifier les templates de test à partir des performances du modèle.
@@ -119,6 +127,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 5. En cas de collision, rejeter l'instance et avancer à la graine suivante ; ne pas déplacer un exemple entre splits. Compter collisions et rejets, et respecter le plafond de tentatives.
 6. Écrire un JSONL par split et un manifeste : configuration, versions, empreintes de bibliothèque, graines, ordre de génération, nombres demandés/obtenus, répartitions, motifs de rejet, dépendances pertinentes et SHA-256 des fichiers.
 7. Fixer sérialisation, encodage UTF-8 et fins de ligne. Les horodatages du manifeste ne doivent pas changer les octets des JSONL.
+8. Dans le test synthétique, prévoir dans chacune des quatre combinaisons famille × nombre de contraintes des cas dont la solution de référence est sur un axe et des cas avec deux variables positives. Utiliser le seuil du pilote (`1e-6`) pour distinguer les groupes. Consigner les effectifs, les éventuels filtres et la distribution obtenue. Rapporter les résultats par géométrie et préciser la composition du test dans le score global. Le diagnostic de 1 000 tirages a donné 825 solutions sur un axe. Les effectifs détaillés figurent dans les notes d'apprentissage.
 
 **Livrable :** `data/train.jsonl`, `data/validation.jsonl`, `data/test.jsonl` et manifeste.
 
@@ -144,7 +153,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 **À faire**
 
-1. Marc écrit vingt problèmes en anglais indépendamment de la bibliothèque, idéalement dix par famille, couvrant deux et trois contraintes et plusieurs présentations. Respecter le même périmètre mathématique.
+1. Marc écrit vingt problèmes en anglais indépendamment de la bibliothèque, idéalement dix par famille, couvrant deux et trois contraintes et plusieurs présentations. Garder les deux familles et deux variables continues non négatives. Inclure quelques cas qui rompent l'association systématique entre famille et sens des contraintes du générateur, par exemple un atelier avec capacité maximale et commande minimale. Identifier ces cas au gel et présenter leurs résultats par cas.
 2. Construire et relire les références ; vérifier schéma, faisabilité et bornitude avec le solveur, puis l'absence de doublons avec le corpus synthétique.
 3. Geler `data/human_test.jsonl`, ses références et son empreinte avant le fine-tuning. Ne pas utiliser ces cas pour les prompts du générateur, les templates, le checkpoint ou les réglages.
 4. Réserver ces cas à l'évaluation finale avant/après, avec le même protocole pour les deux modèles. Ne jamais transférer un échec vers l'entraînement. Tracer toute correction ultérieure d'annotation et l'appliquer aux deux évaluations.
@@ -155,6 +164,6 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 ## Ordre de travail et définition de terminé
 
-Avancer par petits cycles : contrat → pilote de dix exemples → premier lot LLM → qualification → complément de bibliothèque → gel des splits → génération → audit. Ne pas produire le corpus complet avant d'avoir éprouvé les contrôles sur le premier lot.
+Prochain cycle : corriger et relire les témoins, puis éprouver le vérificateur sur les cas de développement. Enchaîner avec un premier lot de templates, sa qualification et le gel des splits avant la génération et l'audit. La rédaction du test humain peut avancer en parallèle. Après le gel des données, réaliser un entraînement principal et la comparaison appariée avant/après.
 
 Cette partie est terminée lorsque bibliothèque et splits sont gelés, JSONL régénérables, tests et audits exécutés, limites documentées et test humain isolé. Cela ne signifie pas que l'entraînement ou l'évaluation du modèle a été réalisé.
