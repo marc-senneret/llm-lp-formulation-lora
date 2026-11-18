@@ -3,6 +3,13 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 18 novembre 2026 — Validation du pilote v2 par Marc
+
+- Marc a comparé automatiquement les dix énoncés à leurs références JSON, coefficients, seconds membres, sens des contraintes et objectif. Il a résolu de nouveau chaque LP et retrouvé les solutions, objectifs, écarts et contraintes actives consignés. Six cas ont les deux contraintes actives, contre un en v1. Les dix cas sont marqués `reviewed`. Le registre `reviews/pilot_v2.json` attache la validation aux énoncés et références relus. La qualification des templates pour le corpus reste à faire.
+- L'écart de travail de `pilot_production_003` valait environ `-2,84e-14`. Le contrôle de faisabilité utilise toujours l'écart calculé et sa tolérance. Le diagnostic ramène ensuite à zéro les valeurs à huit unités d'arrondi près. Le sommet est retrouvé en arithmétique rationnelle. Son objectif exact est `12432/11` et ses deux écarts exacts valent zéro. Les résultats bruts de HiGHS restent disponibles dans `pilot.json`.
+- Les cas libres portent `geometry_matches_target: null`. Le rapport explique les 31 rejets géométriques parmi les graines 42 à 82. Le seul tirage numérique commun aux cas retenus des deux versions est celui de la graine 51. Il correspond à `pilot_mixing_005` dans l'archive v1 et à `pilot_production_001` en v2, avec les sens opposés. Conserver la trace de ce recouvrement et compter ce tirage une fois dans un bilan commun.
+- En v2, `pilot_mixing_005` a un écart exact de `1270/3` sur le nutriment P. La contrainte Q impose `x1 + x2 >= 194/3`. Avec les bornes non négatives, elle implique `8*x1 + 9*x2 >= 1552/3 > 94`. La ligne P est donc redondante et reste visible comme cas de diagnostic.
+
 ## 18 novembre 2026 — Revue du projet
 
 ### Vérifications exécutées
@@ -37,7 +44,7 @@ Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 - Profil spécifique `configs/pilot_v2.json` : cinq exemples par famille, dont les trois premiers exigent deux variables > `1e-6` et deux contraintes actives selon la tolérance existante. Les deux suivants n'ont pas de filtre géométrique supplémentaire. Les règles générales et quotas du corpus dans `configs/generate_v1.json` restent inchangés.
 - La génération conserve références, graines, profil visé, diagnostic numérique et motif `target_geometry_not_met` pour les rejets géométriques. Le plafond de 100 tentatives s'applique séparément à chaque exemple demandé, y compris les cas ciblés. Aucun nombre n'est réparé.
 - **Exécution v2 :** dix exemples sélectionnés sur 41 tentatives, graines tentées 42 à 82 ; 31 rejets géométriques, zéro rejet numérique ; taux de sélection 24,39 %, admission numérique 100 %. Six cas ciblés vérifiés : production aux graines 51, 52, 68 ; mélange aux graines 74, 76, 80. Les quatre cas libres sont sur des axes pour ce tirage.
-- Les artefacts v1 restent conservés dans `runs/generation_pilot_v1/`. La commande par défaut écrit désormais `runs/generation_pilot_v2/pilot.json` et `review.md`. La v2 attend une nouvelle relecture ; les identifiants locaux du pilote doivent être interprétés avec sa version.
+- Les artefacts v1 restent conservés dans `runs/generation_pilot_v1/`. La commande par défaut écrit désormais `runs/generation_pilot_v2/pilot.json` et `review.md`. La relecture ultérieure de la v2 est consignée ci-dessus. Les identifiants locaux du pilote doivent être interprétés avec leur version.
 - **Tests exécutés :** `python -m pytest -q -p no:cacheprovider` : 79 passés, 1 xfailed. Quotas par famille, géométrie sur les références, reproductibilité et progression des graines vérifiés. Un test force l'épuisement du budget géométrique et confirme que les solutions sur un axe restent autorisées pour les cas libres. Un autre montre qu'un second membre incorrect sur une contrainte lâche peut laisser solution et objectif inchangés. Le comparateur de formulation reste à implémenter.
 
 #### Première exécution v1 (conservée)
@@ -48,7 +55,7 @@ Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 - **Exécuté :** `$env:PYTHONPATH = 'src'` puis `python -m lp_llm.generate`. Cinq exemples par famille, dix tentatives, graines 42 à 51, taux d'admission numérique 100 %, aucun rejet observé. Le test du plafond force des rejets séparément. Les artefacts `runs/generation_pilot_v1/pilot.json` et `review.md` restent hors Git, régénérables par cette commande.
 - Neuf exemples ont une seule contrainte active et un en a deux (graine 51). Ce constat ne prouve pas la redondance ; aucun filtre de redondance n'a été ajouté. Le taux d'admission de dix cas n'est pas une preuve de diversité du futur corpus.
 - **Tests exécutés :** `python -m pytest -q -p no:cacheprovider` : 77 passés, 1 xfailed (test volontairement faux du solveur). Reproductibilité du pilote et absence de modification du générateur global vérifiées ; cas d'optima multiples, contrainte inactive, résultats non finis, origine, violation d'une exigence >=, absence de contrainte active, champ manquant et plafond de trois tentatives couverts.
-- **En attente :** Marc compare les dix textes aux matrices, seconds membres, objectifs et bornes dans `review.md`. Les exemples sont marqués `development` et `human_review: pending`. La phase 2 ne sera terminée qu'après cette relecture ; aucun candidat n'est automatiquement accepté.
+- La v1 a servi au diagnostic de diversité. Les dix cas soumis ensuite à la validation de Marc sont ceux de la v2.
 
 ### Complément — Étape 1 terminée pour la définition du contrat
 

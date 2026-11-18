@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG = json.loads((ROOT / "configs/generate_v1.json").read_text(encoding="utf-8"))
 TEMPLATES = json.loads((ROOT / "templates/candidates.json").read_text(encoding="utf-8"))
 PILOT_CONFIG = json.loads((ROOT / "configs/pilot_v2.json").read_text(encoding="utf-8"))
+PILOT_REVIEWS = json.loads((ROOT / "reviews/pilot_v2.json").read_text(encoding="utf-8"))
 
 
 def test_pilot_reproducible_and_independent_of_global_random():
@@ -29,12 +30,33 @@ def test_pilot_reproducible_and_independent_of_global_random():
     for family in ("production", "mixing"):
         examples = [e for e in first["examples"] if e["family"] == family]
         assert [e["stratum"] for e in examples] == ["interior_two_active"] * 3 + ["unrestricted"] * 2
+        assert [e["diagnostic"]["geometry_matches_target"] for e in examples] == [True] * 3 + [None] * 2
         for example in examples[:3]:
             solution = example["solver_result"]["solution"]
             assert min(solution) > PILOT_CONFIG["positive_variable_tolerance"]
             for row in example["reference"]["constraints"]:
                 lhs = sum(a * x for a, x in zip(row["coefficients"], solution))
                 assert lhs == pytest.approx(row["rhs"], rel=1e-6, abs=1e-6)
+
+
+def test_reviewed_pilot_preserves_rational_results_and_review_scope():
+    pilot = generate.generate_pilot(CONFIG, TEMPLATES, PILOT_CONFIG)
+    examples = {example["id"]: example for example in pilot["examples"]}
+    assert pilot["summary"]["interior_two_active"] == 6
+    assert all(example["exact_result"] is not None for example in examples.values())
+    example = examples["pilot_production_003"]
+    assert example["diagnostic"]["constraint_slacks"] == [0.0, 0.0]
+    assert example["exact_result"] == {
+        "solution": ["189/11", "112/11"],
+        "objective_value": "12432/11",
+        "constraint_slacks": ["0", "0"],
+    }
+    assert examples["pilot_mixing_005"]["exact_result"]["constraint_slacks"] == ["1270/3", "0"]
+    generate.apply_pilot_reviews(pilot, PILOT_REVIEWS)
+    assert all(example["human_review"] == "reviewed" for example in examples.values())
+    changed = dict(example, statement=example["statement"] + " Edit.", human_review="pending")
+    generate.apply_pilot_reviews({"examples": [changed]}, PILOT_REVIEWS)
+    assert changed["human_review"] == "pending"
 
 
 def test_multiple_optima_and_inactive_constraint_are_allowed():
@@ -111,7 +133,8 @@ def test_geometry_filter_has_its_own_limit_and_unrestricted_cases_still_allow_ax
         generate.generate_pilot(config, TEMPLATES, profile)
     assert len(error.value.attempts) == 2
     assert all(a["diagnostic"]["reason"] == "target_geometry_not_met"
-               and a["diagnostic"]["numeric_admission_accepted"] for a in error.value.attempts)
+               and a["diagnostic"]["numeric_admission_accepted"]
+               and a["diagnostic"]["geometry_matches_target"] is False for a in error.value.attempts)
 
     profile["targeted_per_family"] = 0
     pilot = generate.generate_pilot(config, TEMPLATES, profile)

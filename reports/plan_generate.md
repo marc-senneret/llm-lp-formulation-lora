@@ -1,12 +1,12 @@
 # Plan de génération du corpus
 
-**Statut au 18 novembre 2026 : étape 1 documentée et vérifiée techniquement ; étape 2 implémentée et pilote exécuté, relecture humaine en attente.** Configuration et contrat écrits, un exemple complet par famille rendu et résolu (voir `reports/contract_examples_v1.md`). Le pilote courant fournit dix exemples dans `runs/generation_pilot_v2/` ; la version 1 est conservée. Les étapes 3 à 8 restent à exécuter ; les candidats ne sont pas encore admis dans la bibliothèque. Le corpus final n'est pas généré.
+**Statut au 18 novembre 2026.** Étape 1 documentée et vérifiée techniquement. Étape 2 exécutée et les dix cas de la v2 ont été validés par Marc. La v1 est conservée comme archive. Les étapes 3 à 8 restent à exécuter. L'admission des templates et la génération du corpus final restent à faire.
 
 **Mise à jour : 17 novembre 2026.** Marc autorise la rédaction de templates candidats par un LLM, puis leur filtrage et leur validation. Cette décision complète le cadrage initial, qui ne nécessitait pas de LLM externe. Le LLM produit des données textuelles, pas du code à exécuter.
 
 ## Priorité après la revue du 18 novembre 2026
 
-Le premier livrable expérimental est une comparaison du modèle initial et du même modèle adapté par LoRA sur des énoncés tenus à l'écart de l'entraînement. Construire le vérificateur sur quelques exemples de développement avant d'élargir la bibliothèque. Réutiliser les deux témoins du pilote après relecture de Marc.
+Le premier livrable expérimental est une comparaison du modèle initial et du même modèle adapté par LoRA sur des énoncés tenus à l'écart de l'entraînement. Construire le vérificateur sur quelques exemples de développement avant d'élargir la bibliothèque. Réutiliser les deux témoins relus par Marc.
 
 - Pour chaque réponse brute, enregistrer quatre résultats avec tous les exemples au dénominateur : validité du JSON et du schéma, exactitude de la formulation après normalisation documentée, succès du solveur sur le problème prédit, succès de la solution prédite sur le problème de référence. Pour ce dernier, vérifier la faisabilité et calculer l'objectif **de référence** au point prédit. Compter les sorties invalides ou tronquées comme des échecs, sans réparation.
 - Éprouver le vérificateur avec un second membre erroné qui laisse l'optimum intact, des lignes réordonnées ou mises à l'échelle, et deux solutions distinctes d'un même problème à optima multiples. Rejeter les clés JSON dupliquées et vérifier qu'un entier impossible à convertir pour le solveur produit un diagnostic sans interrompre le lot.
@@ -46,9 +46,9 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 ## Étape 2 — Construire le pilote numérique et deux templates témoins
 
-**Statut : implémentée et exécutée, en attente de relecture des dix exemples par Marc.** `src/lp_llm/generate.py` fournit échantillonnage local, admission numérique, rendu et CLI. Le premier pilote, conservé en v1, comporte neuf solutions sur un axe. Après retour de Marc, `configs/pilot_v2.json` impose par famille trois cas avec deux variables positives et deux contraintes actives, puis deux tirages libres. Ce filtre est limité au pilote : aucune obligation générale d'activité de toutes les contraintes dans le corpus. Exécution v2 : dix exemples, graines tentées 42 à 82, 41 tentatives, 31 rejets géométriques et zéro rejet numérique. `runs/generation_pilot_v2/pilot.json` conserve les entrées et diagnostics ; `review.md` présente les textes et références. Les tests couvrent aussi les rejets et le plafond de tentatives. Aucun résultat de relecture humaine n'est présumé. Commandes dans `README.md`.
+**Statut : étape terminée, dix exemples v2 relus.** Marc a confirmé la correspondance entre les dix textes et leurs références, puis recalculé les solutions, objectifs, écarts et contraintes actives. Six exemples ont deux contraintes actives, contre un en v1. Les graines 42 à 82 donnent 41 tentatives, dont 31 rejets géométriques et zéro rejet numérique. Le registre `reviews/pilot_v2.json` conserve les empreintes des dix cas relus. Les résultats et diagnostics se trouvent dans `runs/generation_pilot_v2/`. Les tests couvrent aussi les rejets et le plafond de tentatives. Commandes dans `README.md`.
 
-**À faire**
+**Travail réalisé**
 
 1. Écrire un échantillonneur simple par famille, avec un `random.Random(seed)` local par instance et une graine enregistrée. Ne pas utiliser le générateur aléatoire global.
 2. Construire la référence dans le schéma existant. L'interface actuelle `solve_lp_problem` attend une chaîne JSON : sérialiser explicitement la référence.
@@ -164,6 +164,6 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 ## Ordre de travail et définition de terminé
 
-Prochain cycle : corriger et relire les témoins, puis éprouver le vérificateur sur les cas de développement. Enchaîner avec un premier lot de templates, sa qualification et le gel des splits avant la génération et l'audit. La rédaction du test humain peut avancer en parallèle. Après le gel des données, réaliser un entraînement principal et la comparaison appariée avant/après.
+Prochain cycle : éprouver le vérificateur sur les cas de développement relus. Reformuler la consigne des témoins avant de qualifier la bibliothèque et relire les rendus modifiés. Enchaîner avec le gel des splits, la génération et l'audit. La rédaction du test humain peut avancer en parallèle. Après le gel des données, réaliser un entraînement principal et la comparaison appariée avant/après.
 
 Cette partie est terminée lorsque bibliothèque et splits sont gelés, JSONL régénérables, tests et audits exécutés, limites documentées et test humain isolé. Cela ne signifie pas que l'entraînement ou l'évaluation du modèle a été réalisé.

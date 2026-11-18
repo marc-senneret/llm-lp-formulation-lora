@@ -2,6 +2,9 @@
 
 import argparse
 from collections import Counter
+from fractions import Fraction
+import hashlib
+from itertools import combinations
 import json
 import math
 from pathlib import Path
@@ -77,15 +80,44 @@ def check_admission(reference: dict, result: dict, rules: dict) -> dict:
         if row["sense"] not in ("<=", ">="):
             return {"accepted": False, "reason": "unsupported_constraint_sense"}
         slack = rhs - lhs if row["sense"] == "<=" else lhs - rhs
-        slacks.append(slack)
         if slack < -(feasibility["absolute"] + feasibility["relative"] * abs(rhs)):
             return {"accepted": False, "reason": "constraint_violation", "constraint_index": i}
+        roundoff = 8 * max(math.ulp(lhs), math.ulp(rhs))
+        slacks.append(0.0 if abs(slack) <= roundoff else slack)
         if abs(lhs - rhs) <= activity["absolute"] + activity["relative"] * abs(rhs):
             active.append(i)
     if rules["require_active_constraint"] and not active:
         return {"accepted": False, "reason": "no_active_constraint"}
     return {"accepted": True, "reason": "accepted", "active_constraint_indices": active,
             "constraint_slacks": slacks}
+
+
+def exact_vertex(reference: dict, result: dict, active_indices: list) -> dict | None:
+    """Recover a HiGHS vertex from active rows using exact rational arithmetic."""
+    rows = [(*reference["constraints"][i]["coefficients"], reference["constraints"][i]["rhs"])
+            for i in active_indices]
+    # Pilot bounds are x1 >= 0 and x2 >= 0.
+    rows.extend((a, b, 0) for (a, b), x in zip(((1, 0), (0, 1)), result["solution"])
+                if math.isclose(x, 0, abs_tol=1e-12))
+    for (a, b, rhs), (c, d, other_rhs) in combinations(rows, 2):
+        determinant = a * d - b * c
+        if determinant == 0:
+            continue
+        point = (Fraction(rhs * d - b * other_rhs, determinant),
+                 Fraction(a * other_rhs - rhs * c, determinant))
+        if min(point) < 0 or not all(math.isclose(x, y, rel_tol=1e-12, abs_tol=1e-12)
+                                    for x, y in zip(point, result["solution"])):
+            continue
+        slacks = []
+        for row in reference["constraints"]:
+            lhs = sum(a * x for a, x in zip(row["coefficients"], point))
+            slacks.append(row["rhs"] - lhs if row["sense"] == "<=" else lhs - row["rhs"])
+        objective = sum(a * x for a, x in zip(reference["objective"]["coefficients"], point))
+        if min(slacks) >= 0 and math.isclose(objective, result["objective_value"],
+                                            rel_tol=1e-12, abs_tol=1e-12):
+            return {"solution": list(map(str, point)), "objective_value": str(objective),
+                    "constraint_slacks": list(map(str, slacks))}
+    return None
 
 
 def render_statement(template: dict, reference: dict) -> str:
@@ -100,6 +132,22 @@ def render_statement(template: dict, reference: dict) -> str:
     if fields != set(values):
         raise ValueError("Template must contain exactly the required numeric fields")
     return template["text"].format(**values)
+
+
+def review_fingerprint(example: dict) -> str:
+    content = {key: example[key] for key in ("seed", "statement", "reference")}
+    payload = json.dumps(content, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def apply_pilot_reviews(pilot: dict, reviews: dict) -> None:
+    for example in pilot["examples"]:
+        review = reviews.get(example["id"])
+        if review and review["sha256"] == review_fingerprint(example):
+            example["human_review"] = "reviewed"
+            example["reviewed_by"] = review["reviewed_by"]
+            if "notes" in review:
+                example["review_notes"] = review["notes"]
 
 
 def generate_pilot(config: dict, templates: list, pilot_config: dict) -> dict:
@@ -134,12 +182,15 @@ def generate_pilot(config: dict, templates: list, pilot_config: dict) -> dict:
                 result = solve_lp_problem(json.dumps(reference, allow_nan=False))
                 diagnostic = check_admission(reference, result, config["admission"])
                 diagnostic["numeric_admission_accepted"] = diagnostic["accepted"]
+                diagnostic["geometry_matches_target"] = None
                 if diagnostic["accepted"]:
-                    matches_target = (min(result["solution"]) > positive_tolerance
-                                      and len(diagnostic["active_constraint_indices"]) == 2)
-                    diagnostic["geometry_matches_target"] = matches_target
-                    if stratum == "interior_two_active" and not matches_target:
-                        diagnostic.update(accepted=False, reason="target_geometry_not_met")
+                    interior = (min(result["solution"]) > positive_tolerance
+                                and len(diagnostic["active_constraint_indices"]) == 2)
+                    diagnostic["interior_two_active"] = interior
+                    if stratum == "interior_two_active":
+                        diagnostic["geometry_matches_target"] = interior
+                        if not interior:
+                            diagnostic.update(accepted=False, reason="target_geometry_not_met")
                 attempts.append({"family": family, "seed": instance_seed, "reference": reference,
                                  "stratum": stratum, "solver_result": result, "diagnostic": diagnostic})
                 if diagnostic["accepted"]:
@@ -150,6 +201,7 @@ def generate_pilot(config: dict, templates: list, pilot_config: dict) -> dict:
                         "lineage_id": template["lineage_id"], "seed": instance_seed,
                         "statement": render_statement(template, reference), "reference": reference,
                         "solver_result": result, "diagnostic": diagnostic,
+                        "exact_result": exact_vertex(reference, result, diagnostic["active_constraint_indices"]),
                         "human_review": "pending",
                     })
                     break
@@ -163,7 +215,8 @@ def generate_pilot(config: dict, templates: list, pilot_config: dict) -> dict:
         "numeric_admission_rate": sum(a["diagnostic"]["numeric_admission_accepted"]
                                       for a in attempts) / len(attempts),
         "selected_by_stratum": dict(Counter(e["stratum"] for e in examples)),
-        "geometry_matches_target": sum(e["diagnostic"]["geometry_matches_target"] for e in examples),
+        "geometry_matches_target": sum(e["diagnostic"]["geometry_matches_target"] is True for e in examples),
+        "interior_two_active": sum(e["diagnostic"]["interior_two_active"] for e in examples),
         "rejections": dict(Counter(a["diagnostic"]["reason"] for a in attempts
                                    if not a["diagnostic"]["accepted"])),
         "seed_rule": "production_then_mixing_increment_after_every_attempt",
@@ -178,6 +231,7 @@ def main():
     parser.add_argument("--config", type=Path, default=Path("configs/generate_v1.json"))
     parser.add_argument("--templates", type=Path, default=Path("templates/candidates.json"))
     parser.add_argument("--pilot-config", type=Path, default=Path("configs/pilot_v2.json"))
+    parser.add_argument("--review-file", type=Path, default=Path("reviews/pilot_v2.json"))
     parser.add_argument("--per-family", type=int, default=None)
     parser.add_argument("--output", type=Path, default=Path("runs/generation_pilot_v2"))
     args = parser.parse_args()
@@ -194,18 +248,33 @@ def main():
             json.dumps({"error": str(error), "config": config, "pilot_config": pilot_config, "templates": templates,
                         "attempts": error.attempts}, indent=2, allow_nan=False) + "\n", encoding="utf-8")
         raise
+    if args.review_file.exists():
+        apply_pilot_reviews(pilot, json.loads(args.review_file.read_text(encoding="utf-8")))
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "pilot.json").write_text(
         json.dumps(pilot, indent=2, ensure_ascii=False, allow_nan=False) + "\n", encoding="utf-8")
-    review = ["# Development pilot — human review pending", "",
+    summary = pilot["summary"]
+    reviewed = sum(example["human_review"] == "reviewed" for example in pilot["examples"])
+    review = ["# Development pilot", "",
               f"Pilot version: {pilot_config['pilot_version']}", "",
-              "Not part of train/validation/test. Compare each statement with its reference.", ""]
+              f"Human review: {reviewed}/{summary['examples']} development examples reviewed.", "",
+              f"Seeds {pilot['attempts'][0]['seed']} to {summary['next_seed'] - 1} were tried in order.",
+              "Skipped seeds in the list below are rejected attempts. See pilot.json for their diagnostics.",
+              f"Rejected attempts by reason: {json.dumps(summary['rejections'])}.", ""]
     for example in pilot["examples"]:
+        report_result = {"reference": example["reference"], "diagnostic": example["diagnostic"]}
+        if example["exact_result"] is None:
+            report_result["solver_result"] = example["solver_result"]
+        else:
+            report_result["solver_status"] = example["solver_result"]["status"]
+            report_result["exact_result"] = example["exact_result"]
         review += ["## " + example["id"], "", f"Seed: {example['seed']}", "",
                    f"Stratum: {example['stratum']}", "",
                    example["statement"], "", "```json",
-                   json.dumps({key: example[key] for key in ("reference", "solver_result", "diagnostic")},
-                              indent=2), "```", "", "Human review: pending.", ""]
+                   json.dumps(report_result, indent=2),
+                   "```", "", f"Human review: {example['human_review']}.", ""]
+        review.extend(f"- {note}" for note in example.get("review_notes", []))
+        review.append("")
     (args.output / "review.md").write_text("\n".join(review), encoding="utf-8")
     print(json.dumps(pilot["summary"], indent=2))
 

@@ -1,0 +1,48 @@
+{
+  "pilot_production_001": {
+    "sha256": "33defada702e851a6542e218bea40f14f5fe38c81357161147ae192fd2e2d9e4",
+    "reviewed_by": "Marc",
+    "notes": [
+      "Shares seed 51, objective coefficients, constraint coefficients, and right-hand sides with v1 pilot_mixing_005. The objective and inequality directions are reversed. Keep v1 as a historical archive and count this numerical draw once in cross-version summaries."
+    ]
+  },
+  "pilot_production_002": {
+    "sha256": "8d94f23c35884647ebc551bb85a2dc2d52141f5e3072109d905f742a9628689b",
+    "reviewed_by": "Marc"
+  },
+  "pilot_production_003": {
+    "sha256": "6a79e5222d4a3eaaccd24ae99b0d3ccb3074c1e190bf5ede4876749f7260c911",
+    "reviewed_by": "Marc"
+  },
+  "pilot_production_004": {
+    "sha256": "cc5c63b3a4fe1f5970bef0d3ce1129162caf7645ff142bcf1f83ea4a98242a54",
+    "reviewed_by": "Marc"
+  },
+  "pilot_production_005": {
+    "sha256": "57f8a810d2d1cbaa2ec70d2281f7d84ac15f2b3f3f071677ccb8e46d948d79ac",
+    "reviewed_by": "Marc"
+  },
+  "pilot_mixing_001": {
+    "sha256": "bf309e86f58ea64fe5ca9d8439174c8a43b27435a254459bb06bc13fa859e355",
+    "reviewed_by": "Marc"
+  },
+  "pilot_mixing_002": {
+    "sha256": "9cd5340040cd37e909ff023e08538ede98266e34798728e63e3dc2c1b53bf4a4",
+    "reviewed_by": "Marc"
+  },
+  "pilot_mixing_003": {
+    "sha256": "488e89f3bbd40c2a69098161147c33d37d163a6e85af7cb32577ff633c469bca",
+    "reviewed_by": "Marc"
+  },
+  "pilot_mixing_004": {
+    "sha256": "85c457f4ecd90c73569187e3f980fae650b09a8663255c9f90d0074e17c5e476",
+    "reviewed_by": "Marc"
+  },
+  "pilot_mixing_005": {
+    "sha256": "5b700dedaea4f21c8742e573fce3a69c7081b3f8db33be2a0be5cbde3f80f9ff",
+    "reviewed_by": "Marc",
+    "notes": [
+      "The nutrient P row is redundant: x1 + x2 >= 194/3 and nonnegative bounds imply 8*x1 + 9*x2 >= 1552/3 > 94. Its exact slack at the reported optimum is 1270/3."
+    ]
+  }
+}
