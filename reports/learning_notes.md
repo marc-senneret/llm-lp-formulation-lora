@@ -3,6 +3,17 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 18 novembre 2026 — Simplification du contrat des templates
+
+**Statut : organisation des fichiers modifiée ; génération et qualification non implémentées.**
+
+- Chaque template possède un texte anglais complet, un contexte, des produits, des ressources, des unités et un nombre de contraintes fixes. Seuls les coefficients et seconds membres sont remplacés.
+- Suppression du catalogue de scénarios et du tirage de ressources : éviter les associations incohérentes et les accords grammaticaux liés aux substitutions textuelles.
+- `configs/template_contract_v1.json` contient les champs numériques autorisés, les règles de présence et le format commun des candidats. `configs/generate_v1.json` reste inchangé.
+- L'exemple production est déplacé de `configs/candidate_example_production.json` vers `templates/candidates.json`, avec métadonnées fixes de variables, d'unités et de correspondance. Sa lignée est conservée et son statut est `needs_review`. Les unités abrégées évitent les variations singulier/pluriel.
+- `templates/accepted.json` est vide : aucune admission humaine n'est présumée. Le témoin mélange/achat, les templates à trois contraintes et le pilote restent à faire.
+- **Vérification ponctuelle exécutée :** lecture JSON des deux configurations et des deux bibliothèques ; présence exacte des champs numériques requis pour le candidat à deux contraintes ; cohérence des indices, de l'ordre des variables et des sens ; rendu avec huit valeurs distinctes sans champ restant. Contrôles réussis. Ce contrôle structurel ne remplace pas la qualification sémantique ni le pilote numérique.
+
 ## Étape 1A — Diagnostic de l'environnement
 
 **Statut : exécuté** (diagnostic.ipynb, `pip check` et comparaison des versions installées avec `requirements.txt`).

@@ -10,6 +10,8 @@ D'abord les nombres, ensuite le texte : construire une formulation numérique, l
 
 Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-ci validée et gelée, la génération du corpus est déterministe, sans appel LLM par exemple. Marc valide quelques rendus de chaque template, puis audite un échantillon du corpus final.
 
+**Organisation retenue le 18 novembre 2026 :** chaque template possède un contexte, des produits, des ressources, des unités et un nombre de contraintes fixes. Seuls les nombres sont remplacés au rendu ; aucun tirage de ressources ni assemblage de fragments de phrases. `configs/generate_v1.json` décrit le tirage numérique ; `configs/template_contract_v1.json` décrit les règles communes. Les propositions sont dans `templates/candidates.json`, les templates qualifiés dans `templates/accepted.json` (actuellement vide). Le candidat production reste à qualifier ; le témoin mélange/achat reste à rédiger. La chaîne de génération reste prévue.
+
 - Énoncés en anglais ; deux variables continues non négatives `x1`, `x2`, explicitement ordonnées.
 - Deux ou trois contraintes ; pas d'égalité en v1 ; bornes `[[0, null], [0, null]]`.
 - **Production** : maximiser un profit, contraintes de ressources `<=`.
@@ -23,10 +25,10 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 1. Définir une configuration versionnée : plages numériques, graine principale, volumes, répartition par famille, règle de tirage de deux ou trois contraintes, tolérances et plafond de tentatives.
 2. Partir des plages suivantes : coefficients de contraintes 1–9, profits/coûts 1–50, seconds membres 20–200. Ces choix initiaux ne garantissent pas à eux seuls la diversité.
-3. Définir les champs à trous autorisés, par exemple `{objective_x1}`, `{objective_x2}`, `{constraint_1_x1}`, `{constraint_1_x2}`, `{rhs_1}`, puis les champs des autres contraintes. Déclarer également les produits, ressources et unités s'ils sont variables.
+3. Définir les champs numériques à trous autorisés, par exemple `{objective_x1}`, `{objective_x2}`, `{constraint_1_x1}`, `{constraint_1_x2}`, `{rhs_1}`, puis les champs des autres contraintes. Les produits, ressources et unités sont écrits directement dans chaque template et décrits dans ses métadonnées. Aucun champ textuel variable en v1.
 4. Fixer pour chaque template le nombre de contraintes et la correspondance entre leurs champs, leur ordre dans le texte et les lignes de référence. Une présentation par produit est autorisée si cette correspondance reste explicite.
 5. Rendre obligatoires : définition des variables, continuité, non-négativité, objectif, tous les coefficients et toutes les limites. Interdire les conditions mathématiques supplémentaires et implicites.
-6. Fixer le format des candidats : `template_id`, `lineage_id`, famille, nombre de contraintes, texte à trous, unités et correspondance des champs. Ces métadonnées restent hors de l'énoncé rendu.
+6. Fixer le format des candidats : `template_id`, `lineage_id`, famille, nombre de contraintes, texte à trous numériques, définition et unités des variables, objectif, unités et correspondance des contraintes, ordre de première apparition dans le texte et statut de qualification. Ces métadonnées restent hors de l'énoncé rendu. Chaque candidat est autonome, sans référence à un catalogue de scénarios.
 
 **Livrable :** configuration et contrat documentés, avec un exemple complet par famille.
 
@@ -68,7 +70,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 1. Vérifier format, famille, nombre de contraintes, champs requis et absence de champs inconnus. Définir les occurrences attendues : un champ peut se répéter si le contrat le prévoit.
 2. Rendre des instances de diagnostic avec des valeurs distinctes pour tous les rôles numériques, au besoin hors des plages du corpus. Les échanges de coefficients deviennent ainsi visibles ; ces diagnostics ne sont pas des exemples d'entraînement.
-3. Modifier un champ numérique à la fois : seules ses occurrences prévues doivent changer. Tester les branches à deux et trois contraintes si elles existent.
+3. Modifier un champ numérique à la fois : seules ses occurrences prévues doivent changer. Contrôler séparément les templates à deux et trois contraintes ; chaque template possède un nombre fixe de contraintes, sans branche conditionnelle de texte.
 4. Détecter champs non remplacés, nombres mathématiques non prévus et métadonnées dans le texte. Autoriser les mentions nécessaires de `x1` et `x2`.
 5. Vérifier les unités par rapport au contrat déclaré. Ce contrôle structurel ne prouve pas la cohérence sémantique des phrases.
 

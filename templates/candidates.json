@@ -1,0 +1,44 @@
+[
+  {
+    "template_id": "production_by_product_001",
+    "lineage_id": "production_by_product",
+    "family": "production",
+    "constraint_count": 2,
+    "text": "A workshop produces tables and chairs. Let x1 be the number of tables produced and x2 the number of chairs produced. Both quantities may take any nonnegative real value, including fractional values. The profit per table is {objective_x1} EUR, and the profit per chair is {objective_x2} EUR. Producing each table requires {constraint_1_x1} h of labor and {constraint_2_x1} kg of wood. Producing each chair requires {constraint_1_x2} h of labor and {constraint_2_x2} kg of wood. At most {rhs_1} h of labor and {rhs_2} kg of wood are available. Determine the production quantities that maximize total profit.",
+    "variables": [
+      {"name": "x1", "meaning": "tables produced", "unit": "table"},
+      {"name": "x2", "meaning": "chairs produced", "unit": "chair"}
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": ["objective_x1", "objective_x2"],
+      "coefficient_units": ["EUR/table", "EUR/chair"]
+    },
+    "constraint_order_in_text": [1, 2],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "labor availability",
+        "sense": "<=",
+        "coefficient_fields": ["constraint_1_x1", "constraint_1_x2"],
+        "coefficient_units": ["h/table", "h/chair"],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "h"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "wood availability",
+        "sense": "<=",
+        "coefficient_fields": ["constraint_2_x1", "constraint_2_x2"],
+        "coefficient_units": ["kg/table", "kg/chair"],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "kg"
+      }
+    ],
+    "status": "needs_review"
+  }
+]
