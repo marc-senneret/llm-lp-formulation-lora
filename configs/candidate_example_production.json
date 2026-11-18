@@ -1,0 +1,27 @@
+{
+  "template_id": "production_by_product_001",
+  "lineage_id": "production_by_product",
+  "scenario_id": "furniture_workshop",
+  "family": "production",
+  "constraint_count": 2,
+  "text": "A workshop produces {product_x1_name} and {product_x2_name}. Let x1 and x2 denote their respective production quantities. Both quantities may take any nonnegative real value. Each unit of {product_x1_name} earns a profit of {objective_x1} {objective_unit}, and each unit of {product_x2_name} earns {objective_x2} {objective_unit}. Producing one unit of {product_x1_name} requires {constraint_1_x1} {resource_1_unit} of {resource_1_name} and {constraint_2_x1} {resource_2_unit} of {resource_2_name}. Producing one unit of {product_x2_name} requires {constraint_1_x2} {resource_1_unit} of {resource_1_name} and {constraint_2_x2} {resource_2_unit} of {resource_2_name}. The workshop has at most {rhs_1} {resource_1_unit} of {resource_1_name} and {rhs_2} {resource_2_unit} of {resource_2_name} available. Determine the production quantities that maximize total profit.",
+  "constraint_order_in_text": [1, 2],
+  "resource_mapping": [
+    {
+      "position": 1,
+      "reference_constraint_index": 0,
+      "name_field": "resource_1_name",
+      "unit_field": "resource_1_unit",
+      "coefficient_fields": ["constraint_1_x1", "constraint_1_x2"],
+      "rhs_field": "rhs_1"
+    },
+    {
+      "position": 2,
+      "reference_constraint_index": 1,
+      "name_field": "resource_2_name",
+      "unit_field": "resource_2_unit",
+      "coefficient_fields": ["constraint_2_x1", "constraint_2_x2"],
+      "rhs_field": "rhs_2"
+    }
+  ]
+}

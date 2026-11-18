@@ -1,0 +1,80 @@
+{
+    "contract_version": 1,
+    "authorized_holes":
+    {
+        "objective_x1":true,
+        "objective_x2":true,
+        "constraint_1_x1":true,
+        "constraint_1_x2":true,
+        "rhs_1":true,
+        "constraint_2_x1":true,
+        "constraint_2_x2":true,
+        "rhs_2":true,
+        "constraint_3_x1":true,
+        "constraint_3_x2":true,
+        "rhs_3":true,
+        "resource_1_name": true,
+        "resource_1_unit": true,
+        "resource_2_name": true,
+        "resource_2_unit": true,
+        "resource_3_name": true,
+        "resource_3_unit": true,
+        "product_x1_name": true,
+        "product_x2_name": true,
+        "product_x1_quantity_unit": true,
+        "product_x2_quantity_unit": true,
+        "objective_unit": true
+    },
+    "statement_requirements": {
+    "language": "en",
+    "variables": {
+        "explicit_definitions": true,
+        "order": ["x1", "x2"],
+        "continuous": true,
+        "nonnegative": true
+    },
+    "objective": {
+        "explicit_sense": true,
+        "all_coefficients": true,
+        "explicit_units": true
+    },
+    "constraints": {
+        "all_selected_resources": true,
+        "all_coefficients": true,
+        "all_rhs": true,
+        "explicit_inequality_meaning": true,
+        "explicit_units": true
+    },
+    "additional_mathematical_conditions": "forbidden"
+    },
+    "scenarios":[
+    {
+        "scenario_id": "furniture_workshop",
+        "family": "production",
+        "products": {
+            "x1": {
+                "name": "table",
+                "quantity_unit": "table"
+            },
+            "x2": {
+                "name": "chair",
+                "quantity_unit": "chair"
+            }
+        },
+        "objective": {
+        "meaning": "profit",
+        "unit": "EUR"
+        },
+        "min_resources": 2,
+        "max_resources": 3,
+        "resources": [
+            {"resource_id": 1, "name": "labor","unit": "hour"},
+            {"resource_id": 2, "name": "wood", "unit": "kg"},
+            {"resource_id": 3, "name": "machine time", "unit": "hour"},
+            {"resource_id": 4, "name": "paint", "unit": "liter"}
+        ]
+    }
+    ],
+    "resource_selection": {"replacement": false,"selected_order": "draw_order","constraint_assignment": "selected_order"}
+    
+}
