@@ -5,6 +5,27 @@ Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
 ## 18 novembre 2026 — Simplification du contrat des templates
 
+### Phase 2 — Pilote numérique implémenté et exécuté
+
+#### Révision v2 après retour sur la diversité
+
+- Marc observe que neuf des dix solutions initiales sont sur un axe, avec une seule contrainte active, ce qui masque certaines erreurs dans un contrôle fondé sur l'optimum.
+- Profil spécifique `configs/pilot_v2.json` : cinq exemples par famille, dont les trois premiers exigent deux variables > `1e-6` et deux contraintes actives selon la tolérance existante. Les deux suivants n'ont pas de filtre géométrique supplémentaire. Les règles générales et quotas du corpus dans `configs/generate_v1.json` restent inchangés.
+- La génération conserve références, graines, profil visé, diagnostic numérique et motif `target_geometry_not_met` pour les rejets géométriques. Le plafond de 100 tentatives s'applique séparément à chaque exemple demandé, y compris les cas ciblés. Aucun nombre n'est réparé.
+- **Exécution v2 :** dix exemples sélectionnés sur 41 tentatives, graines tentées 42 à 82 ; 31 rejets géométriques, zéro rejet numérique ; taux de sélection 24,39 %, admission numérique 100 %. Six cas ciblés vérifiés : production aux graines 51, 52, 68 ; mélange aux graines 74, 76, 80. Les quatre cas libres sont sur des axes pour ce tirage.
+- Les artefacts v1 restent conservés dans `runs/generation_pilot_v1/`. La commande par défaut écrit désormais `runs/generation_pilot_v2/pilot.json` et `review.md`. La v2 attend une nouvelle relecture ; les identifiants locaux du pilote doivent être interprétés avec sa version.
+- **Tests exécutés :** `python -m pytest -q -p no:cacheprovider` : 79 passés, 1 xfailed. Quotas par famille, géométrie sur les références, reproductibilité et progression des graines vérifiés. Un test force l'épuisement du budget géométrique et confirme que les solutions sur un axe restent autorisées pour les cas libres. Un autre montre qu'un second membre incorrect sur une contrainte lâche peut laisser solution et objectif inchangés. Le comparateur de formulation reste à implémenter.
+
+#### Première exécution v1 (conservée)
+
+- Étape 1 commitée sous `634450a` avant les changements de phase 2.
+- `src/lp_llm/generate.py` : quatre fonctions principales, échantillonnage, admission, rendu et assemblage du pilote, avec une CLI. Générateur `random.Random(seed)` local par tentative ; ordre production puis mélange ; graine incrémentée après chaque tentative. JSON explicitement sérialisé pour le solveur existant.
+- Admission : statut optimal, solution et objectif finis, hors origine, non-négativité et faisabilité selon les tolérances, au moins une contrainte active. Ni unicité de l'optimum ni activité de toutes les contraintes exigées. Chaque rejet conserve sa raison, sa graine et sa référence. Au plafond, arrêt explicite et sauvegarde des tentatives dans `failure.json` via la CLI.
+- **Exécuté :** `$env:PYTHONPATH = 'src'` puis `python -m lp_llm.generate`. Cinq exemples par famille, dix tentatives, graines 42 à 51, taux d'admission numérique 100 %, aucun rejet observé. Le test du plafond force des rejets séparément. Les artefacts `runs/generation_pilot_v1/pilot.json` et `review.md` restent hors Git, régénérables par cette commande.
+- Neuf exemples ont une seule contrainte active et un en a deux (graine 51). Ce constat ne prouve pas la redondance ; aucun filtre de redondance n'a été ajouté. Le taux d'admission de dix cas n'est pas une preuve de diversité du futur corpus.
+- **Tests exécutés :** `python -m pytest -q -p no:cacheprovider` : 77 passés, 1 xfailed (test volontairement faux du solveur). Reproductibilité du pilote et absence de modification du générateur global vérifiées ; cas d'optima multiples, contrainte inactive, résultats non finis, origine, violation d'une exigence >=, absence de contrainte active, champ manquant et plafond de trois tentatives couverts.
+- **En attente :** Marc compare les dix textes aux matrices, seconds membres, objectifs et bornes dans `review.md`. Les exemples sont marqués `development` et `human_review: pending`. La phase 2 ne sera terminée qu'après cette relecture ; aucun candidat n'est automatiquement accepté.
+
 ### Complément — Étape 1 terminée pour la définition du contrat
 
 - Ajout du candidat `mixing_by_requirement_001` : achats continus de deux suppléments, coût minimal et deux exigences `>=` sur des apports de nutriments. Aucun total imposé ni proportion. Texte et unités fixes.

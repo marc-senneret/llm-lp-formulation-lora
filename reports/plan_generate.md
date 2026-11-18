@@ -1,6 +1,6 @@
 # Plan — `generate.py` : corpus, templates assistés par LLM et splits
 
-**Statut au 18 novembre 2026 : étape 1 documentée et vérifiée techniquement.** Configuration et contrat écrits, un exemple complet par famille rendu et résolu (voir `reports/contract_examples_v1.md`). Les étapes 2 à 8 restent à exécuter ; les candidats ne sont pas encore admis dans la bibliothèque. `schema.py` et `solver.py` existent ; leur présence ne valide pas la chaîne de génération.
+**Statut au 18 novembre 2026 : étape 1 documentée et vérifiée techniquement ; étape 2 implémentée et pilote exécuté, relecture humaine en attente.** Configuration et contrat écrits, un exemple complet par famille rendu et résolu (voir `reports/contract_examples_v1.md`). Le pilote courant fournit dix exemples dans `runs/generation_pilot_v2/` ; la version 1 est conservée. Les étapes 3 à 8 restent à exécuter ; les candidats ne sont pas encore admis dans la bibliothèque. Le corpus final n'est pas généré.
 
 **Mise à jour : 17 novembre 2026.** Marc autorise la rédaction de templates candidats par un LLM, puis leur filtrage et leur validation. Cette décision complète le cadrage initial, qui ne nécessitait pas de LLM externe. Le LLM produit des données textuelles, pas du code à exécuter.
 
@@ -38,13 +38,15 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 ## Étape 2 — Construire le pilote numérique et deux templates témoins
 
+**Statut : implémentée et exécutée, en attente de relecture des dix exemples par Marc.** `src/lp_llm/generate.py` fournit échantillonnage local, admission numérique, rendu et CLI. Le premier pilote, conservé en v1, comporte neuf solutions sur un axe. Après retour de Marc, `configs/pilot_v2.json` impose par famille trois cas avec deux variables positives et deux contraintes actives, puis deux tirages libres. Ce filtre est limité au pilote : aucune obligation générale d'activité de toutes les contraintes dans le corpus. Exécution v2 : dix exemples, graines tentées 42 à 82, 41 tentatives, 31 rejets géométriques et zéro rejet numérique. `runs/generation_pilot_v2/pilot.json` conserve les entrées et diagnostics ; `review.md` présente les textes et références. Les tests couvrent aussi les rejets et le plafond de tentatives. Aucun résultat de relecture humaine n'est présumé. Commandes dans `README.md`.
+
 **À faire**
 
 1. Écrire un échantillonneur simple par famille, avec un `random.Random(seed)` local par instance et une graine enregistrée. Ne pas utiliser le générateur aléatoire global.
 2. Construire la référence dans le schéma existant. L'interface actuelle `solve_lp_problem` attend une chaîne JSON : sérialiser explicitement la référence.
 3. Exiger le statut `optimal`, une solution et un objectif finis, une solution différente de l'origine et au moins une contrainte active selon les tolérances fixées. Chaque contrainte doit porter sur les variables. Ne pas imposer un optimum unique ni l'activité de toutes les contraintes.
 4. Rejeter une instance non admise, enregistrer la raison et passer à la graine suivante. Ne pas réparer silencieusement ses nombres. Arrêter avec un diagnostic au plafond de tentatives.
-5. Préparer un template témoin simple par famille, avec un nombre de contraintes fixé. Générer cinq exemples par famille ; Marc compare texte, matrice, second membre, objectif et bornes.
+5. Préparer un template témoin simple par famille, avec un nombre de contraintes fixé. Générer cinq exemples par famille : trois cas ciblés avec deux variables > `1e-6` et deux contraintes actives, puis deux tirages sans filtre géométrique supplémentaire. Cette composition diagnostique ne fixe pas la distribution du corpus final. Marc compare texte, matrice, second membre, objectif et bornes.
 6. Conserver graines, références, diagnostics et corrections. Mesurer le taux d'admission. Signaler la redondance éventuelle de contraintes comme propriété du corpus, sans ajouter un filtre complexe en v1.
 
 **Livrable :** pilote reproductible et dix exemples relus. Ces exemples de développement ne deviennent pas des exemples de test.

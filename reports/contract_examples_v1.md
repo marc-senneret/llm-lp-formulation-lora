@@ -145,4 +145,4 @@ Résultat du solveur :
 
 ## Limites et suite
 
-L'étape 1 est documentée avec un exemple complet par famille et une vérification technique de correspondance. Les candidats restent `needs_review` et la bibliothèque acceptée reste vide. La qualification de l'étape 4 exige encore les rendus prévus et la relecture de Marc. Le pilote de l'étape 2, ses dix exemples et les templates à trois contraintes ne sont pas réalisés.
+L'étape 1 est documentée avec un exemple complet par famille et une vérification technique de correspondance. Les candidats restent `needs_review` et la bibliothèque acceptée reste vide. La qualification de l'étape 4 exige encore les rendus prévus et la relecture de Marc. Le pilote de l'étape 2 a depuis été exécuté puis diversifié : ses dix exemples courants attendent une relecture dans `runs/generation_pilot_v2/review.md`. Le premier pilote reste conservé en v1. Les templates à trois contraintes restent à rédiger.

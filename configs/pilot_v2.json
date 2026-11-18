@@ -1,0 +1,6 @@
+{
+  "pilot_version": 2,
+  "per_family": 5,
+  "targeted_per_family": 3,
+  "positive_variable_tolerance": 1e-6
+}
