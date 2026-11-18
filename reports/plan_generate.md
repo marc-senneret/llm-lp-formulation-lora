@@ -1,6 +1,6 @@
 # Plan — `generate.py` : corpus, templates assistés par LLM et splits
 
-**Statut : prévu.** Les étapes ci-dessous ne sont pas encore attestées comme implémentées ou exécutées. `schema.py` et `solver.py` existent ; leur présence ne valide pas la chaîne de génération.
+**Statut au 18 novembre 2026 : étape 1 documentée et vérifiée techniquement.** Configuration et contrat écrits, un exemple complet par famille rendu et résolu (voir `reports/contract_examples_v1.md`). Les étapes 2 à 8 restent à exécuter ; les candidats ne sont pas encore admis dans la bibliothèque. `schema.py` et `solver.py` existent ; leur présence ne valide pas la chaîne de génération.
 
 **Mise à jour : 17 novembre 2026.** Marc autorise la rédaction de templates candidats par un LLM, puis leur filtrage et leur validation. Cette décision complète le cadrage initial, qui ne nécessitait pas de LLM externe. Le LLM produit des données textuelles, pas du code à exécuter.
 
@@ -10,7 +10,7 @@ D'abord les nombres, ensuite le texte : construire une formulation numérique, l
 
 Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-ci validée et gelée, la génération du corpus est déterministe, sans appel LLM par exemple. Marc valide quelques rendus de chaque template, puis audite un échantillon du corpus final.
 
-**Organisation retenue le 18 novembre 2026 :** chaque template possède un contexte, des produits, des ressources, des unités et un nombre de contraintes fixes. Seuls les nombres sont remplacés au rendu ; aucun tirage de ressources ni assemblage de fragments de phrases. `configs/generate_v1.json` décrit le tirage numérique ; `configs/template_contract_v1.json` décrit les règles communes. Les propositions sont dans `templates/candidates.json`, les templates qualifiés dans `templates/accepted.json` (actuellement vide). Le candidat production reste à qualifier ; le témoin mélange/achat reste à rédiger. La chaîne de génération reste prévue.
+**Organisation retenue le 18 novembre 2026 :** chaque template possède un contexte, des produits, des ressources, des unités et un nombre de contraintes fixes. Seuls les nombres sont remplacés au rendu ; aucun tirage de ressources ni assemblage de fragments de phrases. `configs/generate_v1.json` décrit le tirage numérique ; `configs/template_contract_v1.json` décrit les règles communes. Les propositions sont dans `templates/candidates.json`, les templates qualifiés dans `templates/accepted.json` (actuellement vide). Les candidats production et mélange/achat sont rédigés ; leur qualification reste à faire. La chaîne de génération reste prévue.
 
 - Énoncés en anglais ; deux variables continues non négatives `x1`, `x2`, explicitement ordonnées.
 - Deux ou trois contraintes ; pas d'égalité en v1 ; bornes `[[0, null], [0, null]]`.
@@ -21,7 +21,9 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 ## Étape 1 — Fixer le contrat de génération
 
-**À faire**
+**Statut : terminée pour la définition du contrat.** Vérification des champs, correspondances et rendus exécutée sur un exemple par famille ; les deux références ont le statut `optimal`, confirmé par calcul des sommets. Preuves dans `reports/contract_examples_v1.md`. Cela ne vaut pas admission humaine des templates à l'étape 4.
+
+**Contrat défini**
 
 1. Définir une configuration versionnée : plages numériques, graine principale, volumes, répartition par famille, règle de tirage de deux ou trois contraintes, tolérances et plafond de tentatives.
 2. Partir des plages suivantes : coefficients de contraintes 1–9, profits/coûts 1–50, seconds membres 20–200. Ces choix initiaux ne garantissent pas à eux seuls la diversité.

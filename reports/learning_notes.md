@@ -5,6 +5,16 @@ Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
 ## 18 novembre 2026 — Simplification du contrat des templates
 
+### Complément — Étape 1 terminée pour la définition du contrat
+
+- Ajout du candidat `mixing_by_requirement_001` : achats continus de deux suppléments, coût minimal et deux exigences `>=` sur des apports de nutriments. Aucun total imposé ni proportion. Texte et unités fixes.
+- Vérification exécutée des deux candidats : JSON lisible, champs requis présents sans champ inconnu, ordre des variables et correspondance des lignes, sens par famille, rendu sans champ restant. Les valeurs sont distinctes pour les huit rôles numériques de chaque exemple.
+- Les références passent le schéma et `solve_lp_problem` : production `[44, 12]`, profit 2144 ; mélange `[110/13, 60/13]`, coût 110. Résultats contrôlés indépendamment par les sommets et consignés avec textes et références dans `reports/contract_examples_v1.md`.
+- Pendant la préparation du diagnostic production, une première attente de maximum à l'intersection était erronée : l'assertion l'a détectée. Le diagnostic final utilise des profits 37 et 43, avec les quatre sommets explicitement comparés. Aucun filtre ni solveur n'a été modifié.
+- L'étape 1 dispose de ses livrables. L'étape 2 (échantillonneur et dix exemples), les templates à trois contraintes et la qualification humaine restent à faire. Les deux candidats restent `needs_review`, `templates/accepted.json` reste vide.
+
+### Changement d'organisation initial
+
 **Statut : organisation des fichiers modifiée ; génération et qualification non implémentées.**
 
 - Chaque template possède un texte anglais complet, un contexte, des produits, des ressources, des unités et un nombre de contraintes fixes. Seuls les coefficients et seconds membres sont remplacés.

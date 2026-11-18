@@ -15,4 +15,6 @@ Seul le champ `text`, une fois rendu, devient l'énoncé. Les métadonnées ne s
 
 Le candidat atelier provient de l'exemple rédigé dans la conversation du projet, puis simplifié le 18 novembre 2026. Sa lignée est conservée. Il reste `needs_review` : aucun contrôle humain d'admission n'est enregistré. Une paraphrase ou un changement de contexte de cette même structure garde la même lignée.
 
-Le témoin mélange/achat et les templates à trois contraintes restent à rédiger. Le générateur, les contrôles automatiques de qualification et le corpus ne sont pas encore implémentés.
+Le candidat mélange/achat a été rédigé dans la conversation du projet le 18 novembre 2026 : achat de deux suppléments, coût à minimiser, exigences minimales de deux nutriments. Son statut reste `needs_review`.
+
+Les deux exemples complets (rendus, références et résultats du solveur) sont consignés dans `../reports/contract_examples_v1.md`. Ils documentent le contrat de l'étape 1 ; ils ne constituent pas le pilote de dix exemples de l'étape 2. Les templates à trois contraintes, le générateur, les contrôles automatiques de qualification et le corpus restent à faire.

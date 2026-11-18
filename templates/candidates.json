@@ -40,5 +40,47 @@
       }
     ],
     "status": "needs_review"
+  },
+  {
+    "template_id": "mixing_by_requirement_001",
+    "lineage_id": "mixing_by_requirement",
+    "family": "mixing",
+    "constraint_count": 2,
+    "text": "A farm purchases two feed supplements, supplement A and supplement B. Let x1 be the amount of supplement A purchased, measured in kg, and x2 the amount of supplement B purchased, measured in kg. Both amounts may take any nonnegative real value, including fractional values. The cost per kg is {objective_x1} EUR for supplement A and {objective_x2} EUR for supplement B. Each kg of supplement A supplies {constraint_1_x1} g of nutrient P, and each kg of supplement B supplies {constraint_1_x2} g of nutrient P. The total amount purchased must supply at least {rhs_1} g of nutrient P. Each kg of supplement A supplies {constraint_2_x1} g of nutrient Q, and each kg of supplement B supplies {constraint_2_x2} g of nutrient Q. The total amount purchased must supply at least {rhs_2} g of nutrient Q. Determine the amounts of the two supplements to purchase to minimize total cost.",
+    "variables": [
+      {"name": "x1", "meaning": "supplement A purchased", "unit": "kg"},
+      {"name": "x2", "meaning": "supplement B purchased", "unit": "kg"}
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": ["objective_x1", "objective_x2"],
+      "coefficient_units": ["EUR/kg", "EUR/kg"]
+    },
+    "constraint_order_in_text": [1, 2],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "minimum nutrient P supply",
+        "sense": ">=",
+        "coefficient_fields": ["constraint_1_x1", "constraint_1_x2"],
+        "coefficient_units": ["g/kg", "g/kg"],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "minimum nutrient Q supply",
+        "sense": ">=",
+        "coefficient_fields": ["constraint_2_x1", "constraint_2_x2"],
+        "coefficient_units": ["g/kg", "g/kg"],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "needs_review"
   }
 ]
