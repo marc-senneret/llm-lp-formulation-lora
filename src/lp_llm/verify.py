@@ -9,7 +9,7 @@ from lp_llm.schema import SCHEMA, get_valid_json, respect_problem_perimeter
 from lp_llm.solver import solve_lp_problem
 
 
-def _constraint_key(row: dict) -> tuple:
+def constraint_key(row: dict) -> tuple:
     # Decimal spellings such as 0.1 represent exact decimal numbers here.
     values = tuple(Fraction(str(x)) for x in (*row["coefficients"], row["rhs"]))
     if row["sense"] == ">=":
@@ -54,8 +54,8 @@ def verify_lp(raw: str, reference: dict) -> dict:
         issues.append("Formulation — objectif différent.")
     if predicted["bounds"] != reference["bounds"]:
         issues.append("Formulation — bornes différentes.")
-    if (Counter(map(_constraint_key, predicted["constraints"]))
-            != Counter(map(_constraint_key, reference["constraints"]))):
+    if (Counter(map(constraint_key, predicted["constraints"]))
+            != Counter(map(constraint_key, reference["constraints"]))):
         issues.append("Formulation — une ou plusieurs contraintes diffèrent.")
     checks["formulation"] = not issues
 

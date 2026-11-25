@@ -2,7 +2,7 @@
 
 Traduire des énoncés anglais de programmation linéaire en JSON, puis comparer un modèle initial à son adaptation LoRA. Deux variables continues non négatives, deux ou trois contraintes, production/maximisation du profit et achat/minimisation du coût.
 
-Le contrat de génération est documenté. Marc a validé les dix cas du pilote numérique v2. La qualification des templates pour le corpus, la génération du corpus et l'entraînement principal restent à réaliser. Voir `reports/plan_generate.md` et `reports/learning_notes.md`.
+Marc a validé les dix cas du pilote v2 et les seize gabarits du corpus synthétique. Qwen2.5-1.5B-Instruct a été adapté une époque avec LoRA sur 300 exemples. La formulation exacte stricte passe de 0/20 à 5/20 sur le lot indépendant et de 0/80 à 35/80 sur le test synthétique. Les résultats par famille et les erreurs sont dans `reports/learning_notes.md`.
 
 ## Pilote de génération (étape 2)
 
@@ -50,7 +50,7 @@ Le contrôle écrit le rapport même s'il détecte une anomalie. Compiler la sou
 - 10 cas de production et 10 cas d'achat ou de mélange. Chaque famille compte cinq cas à deux contraintes et cinq à trois contraintes. Huit cas combinent des plafonds et des minimums. Cinq optima sont sur un axe.
 - Chaque ligne contient `id`, `split`, `family`, `statement` et `reference`. Seul `statement` est transmis au modèle avec la consigne commune. Le vérificateur utilise `reference` pour la notation. Ce lot est réservé à la comparaison avant/après LoRA.
 - Marc a retiré le mot « linear » dans `independent_mixing_004`, `independent_mixing_009` et `independent_mixing_010`. La consigne commune précisera le format JSON attendu sans employer « linear program » ni « LP ». Présenter les résultats de ces trois cas individuellement.
-- Les 20 références ont été comparées à une seconde transcription des énoncés et résolues avec HiGHS. Un calcul rationnel par énumération des sommets a retrouvé les 20 solutions et objectifs. Aucun doublon numérique détecté dans le lot ou avec les exemples retenus des pilotes v1 et v2. La comparaison avec le corpus synthétique se fera lorsqu'il sera généré.
+- Les 20 références ont été comparées à une seconde transcription des énoncés et résolues avec HiGHS. Un calcul rationnel par énumération des sommets a retrouvé les 20 solutions et objectifs. Aucun doublon numérique détecté dans le lot, avec les exemples retenus des pilotes v1 et v2 ou avec le corpus synthétique v1.
 - Empreinte SHA-256 de cette version (UTF-8, fins de ligne LF) `9d3ddd8e2d3fd240fa1499991c7b6fa1bbe6155640aea221cd02039ffcc6b5ea`. Toute correction de l'énoncé ou de la référence doit être tracée et appliquée aux deux évaluations.
 
 Pour mesurer le modèle de base à partir du cache local du projet sur GPU CUDA, sous PowerShell.
@@ -61,6 +61,46 @@ python -m lp_llm.evaluate
 ```
 
 Le script utilise la révision de Qwen des notebooks, le décodage glouton et un maximum de 256 nouveaux tokens. Les réponses brutes, la consigne et les quatre scores sont écrits dans `runs/base_independent_v1.json`. Pour relancer la mesure, indiquer un autre fichier avec `--output`. Le notebook `evaluate_demo.ipynb` affiche la mesure archivée et permet d'inspecter une réponse brute et son corrigé. Il peut aussi relancer le même code sur GPU.
+
+## Corpus synthétique v1
+
+Les fichiers définitifs sont `data/train.jsonl` (300 exemples), `data/validation.jsonl` (60) et `data/test.jsonl` (80). Le manifeste `data/corpus_v1_manifest.json` consigne les empreintes, les graines et les affectations. Les trois JSONL sont identiques à ceux de l'aperçu audité par Marc.
+
+```powershell
+$env:PYTHONPATH = 'src'
+python -m lp_llm.corpus --output runs/corpus_v1_reproduction
+```
+
+La commande régénère les lots à partir de `templates/accepted.json`. L'aperçu et le dossier de relecture sont archivés dans `runs/corpus_v1_preview/`.
+
+Les optima à deux variables positives représentent 65/300 en entraînement (21,7 %), 16/60 en validation (26,7 %) et 40/80 en test synthétique (50 %). Le test est équilibré par construction pour couvrir les deux géométries dans chaque combinaison de famille et de nombre de contraintes. Les 176 rejets géométriques concernent ce test. Pour interpréter son score global, le rapport donnera aussi les résultats par géométrie.
+
+## Entraînement LoRA
+
+Depuis la racine, sous PowerShell, vérifier le masque de loss avec le tokenizer en cache. Cette commande contrôle les empreintes du train et de la validation, puis affiche les tokens supervisés de deux exemples de longueurs différentes.
+
+```powershell
+$env:PYTHONPATH = 'src'
+python -m lp_llm.train --check-only
+```
+
+Pour entraîner une époque en BF16 sur CUDA, puis évaluer l'adaptateur avec le protocole du modèle de base.
+
+```powershell
+python -m lp_llm.train
+python -m lp_llm.evaluate --adapter runs/lora_v1 --output runs/lora_independent_v1.json
+```
+
+La configuration est dans `configs/sft_lora.json`. Le script sauvegarde l'adaptateur et les mesures d'entraînement dans `runs/lora_v1/`. La loss est calculée sur le JSON et son marqueur de fin. Le prompt et le padding reçoivent le label `-100`.
+
+La comparaison exécutée sur le lot indépendant utilise les archives `runs/base_independent_v1.json` et `runs/lora_independent_v1.json`. Les deux exécutions partagent la même révision, la même consigne et les mêmes réglages de génération. Les quatre mesures et les erreurs restantes sont consignées dans les notes.
+
+Pour reproduire les deux passages du test synthétique, utiliser les mêmes lots de huit et deux fichiers de sortie distincts.
+
+```powershell
+python -m lp_llm.evaluate --dataset data/test.jsonl --batch-size 8 --output runs/base_synthetic_reproduction.json
+python -m lp_llm.evaluate --dataset data/test.jsonl --batch-size 8 --adapter runs/lora_v1 --output runs/lora_synthetic_reproduction.json
+```
 
 ## Tests
 

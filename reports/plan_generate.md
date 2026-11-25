@@ -1,6 +1,6 @@
 # Plan de génération du corpus
 
-**Statut au 25 novembre 2026.** Étape 1 documentée et vérifiée techniquement. Étape 2 exécutée et les dix cas de la v2 ont été validés par Marc. La v1 est conservée comme archive. Les étapes 3 à 7 restent à exécuter. À l'étape 8, les vingt cas du test indépendant sont rédigés et contrôlés. Leur relecture par Marc et la comparaison avec le futur corpus restent à consigner.
+**Statut au 25 novembre 2026.** Les dix cas du pilote v2 et les seize gabarits du corpus v1 ont été validés par Marc. Les 440 cas synthétiques définitifs et leur manifeste sont dans `data/`. Les vingt cas indépendants ont été contrôlés pour l'absence de recouvrement avec le corpus. La mesure avant LoRA est exécutée sur le test indépendant.
 
 **Mise à jour : 17 novembre 2026.** Marc autorise la rédaction de templates candidats par un LLM, puis leur filtrage et leur validation. Cette décision complète le cadrage initial, qui ne nécessitait pas de LLM externe. Le LLM produit des données textuelles, pas du code à exécuter.
 
@@ -18,14 +18,14 @@ D'abord les nombres, ensuite le texte : construire une formulation numérique, l
 
 Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-ci validée et gelée, la génération du corpus est déterministe, sans appel LLM par exemple. Marc valide quelques rendus de chaque template, puis audite un échantillon du corpus final.
 
-**Organisation retenue le 18 novembre 2026 :** chaque template possède un contexte, des produits, des ressources, des unités et un nombre de contraintes fixes. Seuls les nombres sont remplacés au rendu ; aucun tirage de ressources ni assemblage de fragments de phrases. `configs/generate_v1.json` décrit le tirage numérique ; `configs/template_contract_v1.json` décrit les règles communes. Les propositions sont dans `templates/candidates.json`, les templates qualifiés dans `templates/accepted.json` (actuellement vide). Les candidats production et mélange/achat sont rédigés ; leur qualification reste à faire. La chaîne de génération reste prévue.
+Chaque template possède un contexte, des produits, des ressources, des unités et un nombre de contraintes fixes. Seuls les nombres sont remplacés au rendu. `configs/generate_v1.json` décrit le tirage numérique et `configs/template_contract_v1.json` décrit les règles communes. Les deux témoins sont dans `templates/candidates.json`. Les propositions et leurs affectations sont dans `templates/corpus_v1_candidates.json`. La bibliothèque relue figure dans `templates/accepted.json`.
 
 - Énoncés en anglais ; deux variables continues non négatives `x1`, `x2`, explicitement ordonnées.
 - Deux ou trois contraintes ; pas d'égalité en v1 ; bornes `[[0, null], [0, null]]`.
 - **Production** : maximiser un profit, contraintes de ressources `<=`.
 - **Mélange/achat** : minimiser un coût, exigences `>=`. Éviter les proportions, pourcentages et volumes totaux imposés qui ajouteraient des relations hors de ce contrat.
 - Petits entiers positifs, unités cohérentes sans conversion.
-- Cibles proposées pour la première expérience : 300 train, 60 validation, 80 test synthétique, répartis à parts égales entre les quatre combinaisons famille × nombre de contraintes, puis 20 cas humains à part. Reporter ces cibles dans une configuration versionnée au gel du corpus. Les quotas actuellement inscrits dans `configs/generate_v1.json` restent ceux du cadrage initial.
+- Le profil `configs/corpus_v1.json` fixe 300 exemples d'entraînement, 60 de validation et 80 de test synthétique, répartis à parts égales entre les quatre combinaisons famille × nombre de contraintes. Les 20 cas indépendants restent dans leur propre lot.
 
 ## Étape 1 — Fixer le contrat de génération
 
@@ -88,7 +88,7 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 **Contrôle sémantique à réaliser**
 
-6. Marc relit au moins trois rendus par template, dont un diagnostic à valeurs distinctes. Vérifier sens des inégalités, association de chaque nombre, objectif, unités et absence de condition ajoutée ou omise.
+6. Pour le corpus v1, Marc relit le rendu à valeurs distinctes de chacun des seize gabarits. Le contrôle automatique couvre les 152 substitutions et l'audit indépendant vérifie la présence des valeurs dans les 440 rendus. La lecture vérifie les inégalités, l'association de chaque nombre, les unités et l'objectif.
 7. En complément, un LLM vérificateur peut reconstruire la formulation depuis le seul énoncé et le schéma, sans voir la référence. Comparer ensuite à la référence en tolérant l'ordre des contraintes ; archiver les désaccords. Ne pas accepter automatiquement un template sur le seul accord du LLM.
 8. Ce filtre LLM est facultatif en v1 : sans accès disponible, conserver la relecture humaine. Il peut partager les erreurs du générateur, même avec un autre prompt ou modèle.
 9. Attribuer un statut `accepted`, `rejected` ou `needs_review`. Seul `accepted`, après contrôle humain consigné, est utilisable. Une correction crée une nouvelle version et repasse les contrôles.
@@ -164,6 +164,6 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 ## Ordre de travail et définition de terminé
 
-Prochain cycle : préparer l'évaluation du modèle de base avec le vérificateur. Reformuler la consigne des témoins avant de qualifier la bibliothèque et relire les rendus modifiés. Enchaîner avec le gel des splits, la génération et l'audit. Après le gel des données, réaliser un entraînement principal et la comparaison appariée avant/après.
+Prochain cycle. Préparer le lot d'entraînement avec le chat template de Qwen, vérifier le masque de loss, lancer l'entraînement principal et réaliser la comparaison appariée avant/après.
 
 Cette partie est terminée lorsque bibliothèque et splits sont gelés, JSONL régénérables, tests et audits exécutés, limites documentées et test indépendant isolé.

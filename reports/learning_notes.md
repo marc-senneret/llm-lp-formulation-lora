@@ -3,6 +3,69 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 25 novembre 2026 — Comparaison sur les 80 cas synthétiques
+
+Les deux passages utilisent le même fichier `data/test.jsonl`, vérifié contre le manifeste, la même révision de Qwen et la même consigne. Le décodage est glouton. Pour accélérer le calcul, les deux passages utilisent des lots de huit avec padding à gauche. Sur huit cas indépendants servant à contrôler ce mode d'exécution avec le modèle de base, six sorties sont identiques à la génération individuelle et les huit scores stricts restent identiques. Les résultats ci-dessous comparent les deux modèles dans les mêmes lots. Les sorties sont dans `runs/base_synthetic_v1.json` et `runs/lora_synthetic_v1.json`. Les passages ont pris respectivement 176 s et 209 s.
+
+| Mesure stricte | Avant LoRA | Après LoRA |
+| --- | ---: | ---: |
+| JSON conforme au schéma | 0/80 | 77/80 |
+| Formulation exacte | 0/80 | 35/80 |
+| Optimum trouvé pour le problème prédit | 0/80 | 77/80 |
+| Solution optimale sur le problème de référence | 0/80 | 37/80 |
+
+| Sous-ensemble | Formulation exacte avant → après | Solution optimale de référence avant → après |
+| --- | ---: | ---: |
+| Production | 0/40 → 35/40 | 0/40 → 37/40 |
+| Mélange | 0/40 → 0/40 | 0/40 → 0/40 |
+| Optimum sur un axe | 0/40 → 17/40 | 0/40 → 19/40 |
+| Optimum à deux variables positives | 0/40 → 18/40 | 0/40 → 18/40 |
+
+- Les 80 sorties de base sont entourées de balises Markdown. En retirant uniquement ces balises pour le diagnostic, 17/80 respectent le schéma et 10/80 formulent exactement le problème. Après LoRA, aucune sortie ne contient ces balises. Les 35 gains en formulation stricte incluent donc un effet de format. Aucune réponse n'a atteint la limite de génération sans token de fin.
+- Les 37 JSON conformes du mélange ne donnent que des plafonds de type `<=` avec coefficients et seconds membres positifs. Les références imposent des minimums `>=`. HiGHS résout les 37 formulations prédites, mais leur solution ne satisfait pas les références. Deux autres réponses emploient `None` au lieu de `null`, et la dernière met trois coefficients dans chaque contrainte.
+- Sur les énoncés indépendants, le score après LoRA est de 5/20, dont 3/10 en production et 2/10 en mélange. Le test synthétique retient des lignées distinctes tout en restant dans le contrat du générateur. Les énoncés indépendants varient aussi par leurs coefficients décimaux, leurs présentations et leurs combinaisons de sens d'inégalité. Les deux scores décrivent des niveaux de généralisation différents.
+
+## 25 novembre 2026 — Entraînement principal de Qwen avec LoRA
+
+- Une époque sur 300 exemples, avec 60 exemples pour calculer la loss de validation. Les 19 mises à jour ont entraîné 4 358 144 paramètres, soit 0,28 % du modèle avec l'adaptateur. L'époque et la validation ont pris 255 s sur RTX 4060. Le pic d'allocation CUDA mesuré par PyTorch est de 3,83 Gio.
+- Loss moyenne de 0,0292 sur le train pendant l'époque et de 0,0512 en validation à la fin de l'époque. Les poids et la configuration sont sauvegardés dans `runs/lora_v1/`. Le journal `training.json` conserve la révision, l'empreinte du manifeste de corpus et les versions utilisées.
+
+## 25 novembre 2026 — Comparaison avant et après LoRA
+
+L'adaptateur a été rechargé dans un nouveau processus. Les deux évaluations portent sur les mêmes 20 énoncés, dans le même ordre, avec une empreinte, une révision de modèle, une consigne et des paramètres de génération identiques. Toutes les réponses ont atteint le token de fin. Les sorties et les résultats par cas sont dans `runs/base_independent_v1.json` et `runs/lora_independent_v1.json`.
+
+| Mesure stricte | Avant LoRA | Après LoRA |
+| --- | ---: | ---: |
+| JSON conforme au schéma | 0/20 | 18/20 |
+| Formulation exacte | 0/20 | 5/20 |
+| Optimum trouvé pour le problème prédit | 0/20 | 17/20 |
+| Solution optimale sur le problème de référence | 0/20 | 8/20 |
+
+- Les 20 sorties après LoRA sont lisibles comme JSON et sans balises Markdown. Deux ne respectent pas le schéma, car une contrainte a été omise. À titre de diagnostic, le retrait des seules balises Markdown porte la formulation exacte de 1/20 avant LoRA à 5/20 après. Les taux stricts restent ceux du tableau.
+- La formulation exacte atteint 3/10 en production et 2/10 en mélange. Les erreurs comprennent une permutation complète de x1 et x2 en `production_002`, des exigences minimales transformées en plafonds en `mixing_001` et `mixing_007`, et une confusion entre les limites et les consommations en `production_009`.
+- Les cas `production_007`, `production_008` et `mixing_006` atteignent l'optimum de référence malgré l'omission d'une contrainte. À l'inverse, `production_006` avait une formulation exacte à l'intérieur d'un bloc Markdown avant LoRA et présente une erreur de contrainte après LoRA.
+- Les trois cas sans « linear » donnent tous un JSON conforme après LoRA. Un seul, `mixing_004`, a une formulation exacte. Les cas `mixing_009` et `mixing_010` inversent des inégalités.
+
+## 25 novembre 2026 — Préparation de l'entraînement LoRA
+
+- `python -m lp_llm.train --check-only` a vérifié les empreintes du train et de la validation et la correspondance des cibles avec les tokens supervisés sur les 360 exemples. Deux séquences de 389 et 489 tokens ont été assemblées en lot. Les 100 tokens de padding et les deux prompts sont masqués. Le JSON et son token de fin restent supervisés.
+- Une exécution de contrôle avec un petit Qwen initialisé sur CPU a effectué deux mises à jour, calculé la loss de validation, sauvegardé puis rechargé l'adaptateur. L'entraînement de Qwen2.5-1.5B sur les 300 cas reste à lancer sur CUDA.
+
+## 25 novembre 2026 — Validation de Marc et gel du corpus v1
+
+- Marc a vérifié les seize rendus à valeurs distinctes dans `relecture_rapide.md`. Il a confirmé la formulation, les unités et les sens des contraintes, y compris les quatre gabarits qui présentent la seconde variable en premier. Le dossier long reste archivé.
+- Son script indépendant a contrôlé les empreintes, les volumes, l'unicité des identifiants et des graines, la séparation des gabarits et de leurs lignées, les doublons de texte et de formulation, le recouvrement avec le test indépendant, le schéma et la résolution des 440 références. Il a vérifié la présence des coefficients et seconds membres et l'absence d'identifiant ou de graine dans les énoncés.
+- La géométrie à deux variables positives représente 21,7 % du train, 26,7 % de la validation et 50 % du test synthétique. Les 176 rejets proviennent du quota d'équilibrage du test. Les tirages d'entraînement et de validation conservent leur distribution initiale. Le score du test sera accompagné de résultats par géométrie. Le modèle formule le problème, et la géométrie de référence sert à décrire la couverture.
+- Les seize gabarits ont été admis dans `templates/accepted.json`. Les trois lots générés dans `data/` correspondent à l'aperçu à l'octet près. Le manifeste définitif est `data/corpus_v1_manifest.json`.
+- Le tokenizer de Qwen a mesuré de 390 à 490 tokens sur le train, de 394 à 446 sur la validation et de 401 à 456 sur le test synthétique, avec la consigne, l'énoncé, la réponse JSON et les marqueurs de conversation. Tous ces exemples tiennent dans 1 024 tokens.
+
+## 25 novembre 2026 — Corpus synthétique provisoire
+
+- Seize gabarits, huit lignées pour l'entraînement, quatre pour la validation et quatre pour le test synthétique. Les deux témoins conservent leur lignée et demandent désormais de formuler le problème. L'affectation précède le tirage.
+- Contrôles sur 440 références résolues de nouveau. Aucun doublon de texte ou de formulation entre les lots, avec les vingt cas indépendants ou avec les cas retenus des deux pilotes. Seconde génération identique octet pour octet. Les graines 1000 à 1615 ont été essayées, dont 176 écartées par le filtre de géométrie du test synthétique.
+- Solutions sur un axe ou à deux variables positives, respectivement 235 et 65 en entraînement, 44 et 16 en validation, 40 et 40 en test synthétique. Le test synthétique impose dix cas de chaque géométrie pour chacune des quatre combinaisons famille et nombre de contraintes.
+- Le manifeste et les 48 rendus de relecture sont dans `runs/corpus_v1_preview/`. Les tests de structure détectent un champ absent, une lignée partagée, un doublon après normalisation et un plafond de tentatives. Le sens du texte et les unités effectivement lues restent à vérifier sur les rendus. Résultat des tests du dépôt, 90 réussis et un échec attendu. La bibliothèque acceptée attend la relecture de Marc.
+
 ## 25 novembre 2026 — Mesure de Qwen avant LoRA
 
 - Qwen2.5-1.5B-Instruct à la révision `989aa7980e4cf806f80c7fef2b1adb7bc71aa306`. Mesure sur 20 énoncés indépendants, en BF16 sur RTX 4060 avec PyTorch `2.8.0+cu128`, Transformers `5.22.1` et SciPy `1.16.1`. Décodage glouton, plafond de 256 nouveaux tokens et pénalité de répétition de 1,1 héritée de la configuration de Qwen. L'exécution a pris 252 s, chargement compris. Les vingt réponses se terminent par un token de fin.

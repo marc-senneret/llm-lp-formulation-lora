@@ -1,0 +1,6 @@
+{
+  "master_seed": 1000,
+  "per_family_and_size": {"train": 75, "validation": 15, "test": 20},
+  "test_interior_per_family_and_size": 10,
+  "positive_variable_tolerance": 1e-6
+}

@@ -1,0 +1,156 @@
+{
+  "preview": false,
+  "python": "3.13.5",
+  "scipy": "1.16.1",
+  "input_sha256_utf8_lf": {
+    "templates/accepted.json": "c9cb684445b3be04fa7f07ca9bd4a90537bcbec34be251b4213d4bd0f7b2d826",
+    "configs/corpus_v1.json": "d5195296a404d507888817678b7ecd3b3eaa3bc70c3bcc5b513cff4269fa9651",
+    "configs/generate_v1.json": "6e045f9492fb2bf69ae42a045156c535096821dd4e63ec9aa35f8cbe37d6860c",
+    "data/human_test.jsonl": "9d3ddd8e2d3fd240fa1499991c7b6fa1bbe6155640aea221cd02039ffcc6b5ea"
+  },
+  "template_assignments": [
+    {
+      "template_id": "production_by_product_002",
+      "lineage_id": "production_by_product",
+      "split": "train"
+    },
+    {
+      "template_id": "production_tank_dispatch_table_001",
+      "lineage_id": "tank_dispatch_table",
+      "split": "train"
+    },
+    {
+      "template_id": "production_packaging_capacity_memo_001",
+      "lineage_id": "packaging_capacity_memo",
+      "split": "validation"
+    },
+    {
+      "template_id": "production_cord_interleaved_001",
+      "lineage_id": "cord_interleaved",
+      "split": "test"
+    },
+    {
+      "template_id": "production_tile_process_steps_001",
+      "lineage_id": "tile_process_steps",
+      "split": "train"
+    },
+    {
+      "template_id": "production_metal_vector_cards_001",
+      "lineage_id": "metal_vector_cards",
+      "split": "train"
+    },
+    {
+      "template_id": "production_fabric_orders_by_limit_001",
+      "lineage_id": "fabric_orders_by_limit",
+      "split": "validation"
+    },
+    {
+      "template_id": "production_soap_auditor_side_by_side_001",
+      "lineage_id": "soap_auditor_side_by_side",
+      "split": "test"
+    },
+    {
+      "template_id": "mixing_by_requirement_002",
+      "lineage_id": "mixing_by_requirement",
+      "split": "train"
+    },
+    {
+      "template_id": "mixing_cleaner_catalog_cards_001",
+      "lineage_id": "cleaner_catalog_cards",
+      "split": "train"
+    },
+    {
+      "template_id": "mixing_garden_requirement_note_001",
+      "lineage_id": "garden_requirement_note",
+      "split": "validation"
+    },
+    {
+      "template_id": "mixing_coating_comparison_sheet_001",
+      "lineage_id": "coating_comparison_sheet",
+      "split": "test"
+    },
+    {
+      "template_id": "mixing_salt_bid_comparison_001",
+      "lineage_id": "salt_bid_comparison",
+      "split": "train"
+    },
+    {
+      "template_id": "mixing_beverage_deficits_001",
+      "lineage_id": "beverage_deficits",
+      "split": "train"
+    },
+    {
+      "template_id": "mixing_potting_reverse_invoice_001",
+      "lineage_id": "potting_reverse_invoice",
+      "split": "validation"
+    },
+    {
+      "template_id": "mixing_ink_restock_tuples_001",
+      "lineage_id": "ink_restock_tuples",
+      "split": "test"
+    }
+  ],
+  "by_template": {
+    "production_by_product_002": 38,
+    "production_tank_dispatch_table_001": 37,
+    "production_tile_process_steps_001": 38,
+    "production_metal_vector_cards_001": 37,
+    "mixing_by_requirement_002": 38,
+    "mixing_cleaner_catalog_cards_001": 37,
+    "mixing_salt_bid_comparison_001": 38,
+    "mixing_beverage_deficits_001": 37,
+    "production_packaging_capacity_memo_001": 15,
+    "production_fabric_orders_by_limit_001": 15,
+    "mixing_garden_requirement_note_001": 15,
+    "mixing_potting_reverse_invoice_001": 15,
+    "production_cord_interleaved_001": 20,
+    "production_soap_auditor_side_by_side_001": 20,
+    "mixing_coating_comparison_sheet_001": 20,
+    "mixing_ink_restock_tuples_001": 20
+  },
+  "seed_start": 1000,
+  "next_seed": 1616,
+  "geometry_by_group": {
+    "train/production/2/axis": 66,
+    "train/production/2/interior": 9,
+    "train/production/3/axis": 60,
+    "train/production/3/interior": 15,
+    "train/mixing/2/interior": 16,
+    "train/mixing/2/axis": 59,
+    "train/mixing/3/axis": 50,
+    "train/mixing/3/interior": 25,
+    "validation/production/2/interior": 4,
+    "validation/production/2/axis": 11,
+    "validation/production/3/interior": 5,
+    "validation/production/3/axis": 10,
+    "validation/mixing/2/axis": 13,
+    "validation/mixing/2/interior": 2,
+    "validation/mixing/3/axis": 10,
+    "validation/mixing/3/interior": 5,
+    "test/production/2/interior": 10,
+    "test/production/2/axis": 10,
+    "test/production/3/interior": 10,
+    "test/production/3/axis": 10,
+    "test/mixing/2/interior": 10,
+    "test/mixing/2/axis": 10,
+    "test/mixing/3/interior": 10,
+    "test/mixing/3/axis": 10
+  },
+  "rejections": {
+    "geometry": 176
+  },
+  "files": {
+    "train.jsonl": {
+      "examples": 300,
+      "sha256": "e79d981a20189c50b9968c3b2d2947407cbda95e3ee1a3e460f746adfba9d027"
+    },
+    "validation.jsonl": {
+      "examples": 60,
+      "sha256": "c74a1361a6a0a4f9366b3c8ed7cb989ad483c746b1d78026b1f413604e1984a8"
+    },
+    "test.jsonl": {
+      "examples": 80,
+      "sha256": "7a35640ea10e5d5b02f60d585f50ced641492191c73b7ad1c30e6b5f680908cf"
+    }
+  }
+}

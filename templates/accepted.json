@@ -1,1 +1,1436 @@
-[]
+[
+  {
+    "template_id": "production_by_product_002",
+    "lineage_id": "production_by_product",
+    "family": "production",
+    "constraint_count": 2,
+    "text": "A workshop produces tables and chairs. Let x1 be the number of tables produced and x2 the number of chairs produced. Both quantities may take any nonnegative real value, including fractional values. The profit per table is {objective_x1} EUR, and the profit per chair is {objective_x2} EUR. Producing each table requires {constraint_1_x1} h of labor and {constraint_2_x1} kg of wood. Producing each chair requires {constraint_1_x2} h of labor and {constraint_2_x2} kg of wood. At most {rhs_1} h of labor and {rhs_2} kg of wood are available. Formulate the problem of maximizing total profit.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "tables",
+        "unit": "table"
+      },
+      {
+        "name": "x2",
+        "meaning": "chairs",
+        "unit": "chair"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/table",
+        "EUR/chair"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "labor",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "h/table",
+          "h/chair"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "h"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "wood",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "kg/table",
+          "kg/chair"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "kg"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25",
+      "parent_template_id": "production_by_product_001"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "production_tank_dispatch_table_001",
+    "lineage_id": "tank_dispatch_table",
+    "family": "production",
+    "constraint_count": 2,
+    "text": "The dispatch sheet lists today's two limits and the figures per litre.\nProduct | Pigment (kg) | Filling time (min) | Profit (EUR)\nBase primer | {constraint_1_x1} | {constraint_2_x1} | {objective_x1}\nFinish primer | {constraint_1_x2} | {constraint_2_x2} | {objective_x2}\nAvailable | {rhs_1} | {rhs_2} | —\nSet x1 to litres of base primer and x2 to litres of finish primer. Both volumes are continuous and nonnegative. Formulate the problem of maximizing total profit.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "base primer",
+        "unit": "L"
+      },
+      {
+        "name": "x2",
+        "meaning": "finish primer",
+        "unit": "L"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/L",
+        "EUR/L"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "pigment",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "kg/L",
+          "kg/L"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "kg"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "filling time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "min/L",
+          "min/L"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "min"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "production_packaging_capacity_memo_001",
+    "lineage_id": "packaging_capacity_memo",
+    "family": "production",
+    "constraint_count": 2,
+    "text": "Shift memo: reserve no more than {rhs_1} min of drying time and {rhs_2} kg of paper stock for today's packaging. Each metre of brown paper costs the dryer {constraint_1_x1} min, versus {constraint_1_x2} min for lined paper. The corresponding stock draw is {constraint_2_x1} kg and {constraint_2_x2} kg per metre. Brown returns {objective_x1} EUR per metre in profit; lined returns {objective_x2} EUR. Use x1 for metres of brown paper and x2 for metres of lined paper, both continuous and nonnegative. Formulate the plan for highest total profit.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "brown paper",
+        "unit": "m"
+      },
+      {
+        "name": "x2",
+        "meaning": "lined paper",
+        "unit": "m"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/m",
+        "EUR/m"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "drying time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "min/m",
+          "min/m"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "min"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "paper stock",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "kg/m",
+          "kg/m"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "kg"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "validation",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "production_cord_interleaved_001",
+    "lineage_id": "cord_interleaved",
+    "family": "production",
+    "constraint_count": 2,
+    "text": "Each metre of round cord earns {objective_x1} EUR profit and consumes {constraint_1_x1} g of resin. Flat cord earns {objective_x2} EUR profit and consumes {constraint_1_x2} g per metre. They share a resin stock of {rhs_1} g. Moulds can be occupied for at most {rhs_2} min in total. A metre of round cord occupies them for {constraint_2_x1} min, and a metre of flat cord for {constraint_2_x2} min. Let x1 be metres of round cord and x2 metres of flat cord, both continuous and nonnegative. Formulate the problem of maximizing total profit.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "round cord",
+        "unit": "m"
+      },
+      {
+        "name": "x2",
+        "meaning": "flat cord",
+        "unit": "m"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/m",
+        "EUR/m"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "resin",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/m",
+          "g/m"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "curing time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "min/m",
+          "min/m"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "min"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "test",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "production_tile_process_steps_001",
+    "lineage_id": "tile_process_steps",
+    "family": "production",
+    "constraint_count": 3,
+    "text": "A tile works plans the areas of rough and glazed tile to make. Let x1 and x2 be those areas in m², respectively, both nonnegative real numbers. Follow the work through three stations.\nPreparation: each m² of rough tile takes {constraint_1_x1} kg of clay and each m² of glazed tile takes {constraint_1_x2} kg. There are {rhs_1} kg available.\nFiring: allocate no more than {rhs_2} h, using {constraint_2_x1} h per m² of rough tile and {constraint_2_x2} h per m² of glazed tile.\nInspection: the time limit is {rhs_3} min. Inspection takes {constraint_3_x1} min per m² of rough tile and {constraint_3_x2} min per m² of glazed tile.\nFormulate the problem of maximizing total profit at {objective_x1} EUR per m² of rough tile and {objective_x2} EUR per m² of glazed tile.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "rough tile",
+        "unit": "m²"
+      },
+      {
+        "name": "x2",
+        "meaning": "glazed tile",
+        "unit": "m²"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/m²",
+        "EUR/m²"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "clay",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "kg/m²",
+          "kg/m²"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "kg"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "kiln time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "h/m²",
+          "h/m²"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "h"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "inspection time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "min/m²",
+          "min/m²"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "min"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "production_metal_vector_cards_001",
+    "lineage_id": "metal_vector_cards",
+    "family": "production",
+    "constraint_count": 3,
+    "text": "A foundry uses a card per alloy. Each tuple gives copper in g, furnace time in min, inspection time in min, and profit in EUR, all per kg of output.\nBronze: ({constraint_1_x1}, {constraint_2_x1}, {constraint_3_x1}, {objective_x1}).\nBrass: ({constraint_1_x2}, {constraint_2_x2}, {constraint_3_x2}, {objective_x2}).\nThe shop can use at most ({rhs_1}, {rhs_2}, {rhs_3}) of the three resources in the same order. Define x1 as kg of bronze and x2 as kg of brass. Both are continuous and nonnegative. Formulate the problem of maximizing total profit.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "bronze alloy",
+        "unit": "kg"
+      },
+      {
+        "name": "x2",
+        "meaning": "brass alloy",
+        "unit": "kg"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/kg",
+        "EUR/kg"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "copper",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "furnace time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "min/kg",
+          "min/kg"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "min"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "inspection time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "min/kg",
+          "min/kg"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "min"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "production_fabric_orders_by_limit_001",
+    "lineage_id": "fabric_orders_by_limit",
+    "family": "production",
+    "constraint_count": 3,
+    "text": "Formulate the maximum-profit schedule for a mill. Profits are {objective_x1} EUR per metre of canvas and {objective_x2} EUR per metre of twill. Let x1 denote canvas metres and x2 twill metres; use continuous nonnegative lengths. The scheduler has three ceilings: {rhs_1} kg of yarn, {rhs_2} min of weaving and {rhs_3} min of rolling. Twill takes {constraint_1_x2} kg of yarn, {constraint_2_x2} min of weaving and {constraint_3_x2} min of rolling per metre. Canvas takes {constraint_1_x1} kg, {constraint_2_x1} min and {constraint_3_x1} min per metre, in the same order.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "canvas",
+        "unit": "m"
+      },
+      {
+        "name": "x2",
+        "meaning": "twill",
+        "unit": "m"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/m",
+        "EUR/m"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "yarn",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "kg/m",
+          "kg/m"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "kg"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "weaving time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "min/m",
+          "min/m"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "min"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "rolling time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "min/m",
+          "min/m"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "min"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "validation",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "production_soap_auditor_side_by_side_001",
+    "lineage_id": "soap_auditor_side_by_side",
+    "family": "production",
+    "constraint_count": 3,
+    "text": "Let x1 be litres of clear soap and x2 litres of opaque soap, using nonnegative real quantities. An auditor measures the extra resource use for adding one litre of each product, in clear then opaque order. For base oil it is {constraint_1_x1} kg versus {constraint_1_x2} kg; the tank can issue up to {rhs_1} kg. For mixing it is {constraint_2_x1} min versus {constraint_2_x2} min; the mixer can run up to {rhs_2} min. For labelling it is {constraint_3_x1} min versus {constraint_3_x2} min; the station can run up to {rhs_3} min. Clear soap earns {objective_x1} EUR/L profit, opaque soap {objective_x2} EUR/L. Formulate the problem of maximizing total profit.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "clear soap",
+        "unit": "L"
+      },
+      {
+        "name": "x2",
+        "meaning": "opaque soap",
+        "unit": "L"
+      }
+    ],
+    "objective": {
+      "meaning": "total profit",
+      "sense": "max",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/L",
+        "EUR/L"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "base oil",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "kg/L",
+          "kg/L"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "kg"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "mixing time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "min/L",
+          "min/L"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "min"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "labelling time",
+        "sense": "<=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "min/L",
+          "min/L"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "min"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "test",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_by_requirement_002",
+    "lineage_id": "mixing_by_requirement",
+    "family": "mixing",
+    "constraint_count": 2,
+    "text": "A farm purchases two feed supplements, supplement A and supplement B. Let x1 be the amount of supplement A purchased, measured in kg, and x2 be the amount of supplement B purchased, measured in kg. Both amounts may take any nonnegative real value, including fractional values. The cost per kg is {objective_x1} EUR for supplement A and {objective_x2} EUR for supplement B. Each kg of supplement A supplies {constraint_1_x1} g of nutrient P, and each kg of supplement B supplies {constraint_1_x2} g of nutrient P. The total amount purchased must supply at least {rhs_1} g of nutrient P. Each kg of supplement A supplies {constraint_2_x1} g of nutrient Q, and each kg of supplement B supplies {constraint_2_x2} g of nutrient Q. The total amount purchased must supply at least {rhs_2} g of nutrient Q. Formulate the problem of minimizing total purchase cost.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "supplement A",
+        "unit": "kg"
+      },
+      {
+        "name": "x2",
+        "meaning": "supplement B",
+        "unit": "kg"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/kg",
+        "EUR/kg"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "nutrient P",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "nutrient Q",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25",
+      "parent_template_id": "mixing_by_requirement_001"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_cleaner_catalog_cards_001",
+    "lineage_id": "cleaner_catalog_cards",
+    "family": "mixing",
+    "constraint_count": 2,
+    "text": "A maintenance team orders concentrates A and B. Their supplier cards list price, solvent delivered and surfactant delivered per litre, in that order.\nA: {objective_x1} EUR, {constraint_1_x1} g, {constraint_2_x1} g.\nB: {objective_x2} EUR, {constraint_1_x2} g, {constraint_2_x2} g.\nThe order must cover {rhs_1} g of solvent and {rhs_2} g of surfactant at minimum. Use x1 for litres of A and x2 for litres of B, both continuous and nonnegative. Formulate the problem of minimizing total cost.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "concentrate A",
+        "unit": "L"
+      },
+      {
+        "name": "x2",
+        "meaning": "concentrate B",
+        "unit": "L"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/L",
+        "EUR/L"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "solvent",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "surfactant",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_garden_requirement_note_001",
+    "lineage_id": "garden_requirement_note",
+    "family": "mixing",
+    "constraint_count": 2,
+    "text": "The garden's purchasing note calls for at least {rhs_1} g of potassium and {rhs_2} g of calcium. A litre of solution S contributes {constraint_1_x2} g of potassium and {constraint_2_x2} g of calcium; a litre of solution R contributes {constraint_1_x1} g and {constraint_2_x1} g, respectively. The invoice uses {objective_x2} EUR/L for S and {objective_x1} EUR/L for R. Set x1 to litres of R and x2 to litres of S, with both volumes continuous and nonnegative. Formulate the problem for the lowest purchase cost.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "solution R",
+        "unit": "L"
+      },
+      {
+        "name": "x2",
+        "meaning": "solution S",
+        "unit": "L"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/L",
+        "EUR/L"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "potassium",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "calcium",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "validation",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_coating_comparison_sheet_001",
+    "lineage_id": "coating_comparison_sheet",
+    "family": "mixing",
+    "constraint_count": 2,
+    "text": "Choose the lowest-cost purchase of coatings U and V. Use x1 and x2 for kg of U and V, respectively, both continuous and nonnegative. The comparison sheet shows the contributions per kg, and the required totals for the order.\nMeasure | U | V | Minimum total\nHardener (g) | {constraint_1_x1} | {constraint_1_x2} | {rhs_1}\nBinder (g) | {constraint_2_x1} | {constraint_2_x2} | {rhs_2}\nThe prices per kg are {objective_x1} EUR for U and {objective_x2} EUR for V. Formulate the cost minimization problem.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "coating U",
+        "unit": "kg"
+      },
+      {
+        "name": "x2",
+        "meaning": "coating V",
+        "unit": "kg"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/kg",
+        "EUR/kg"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "hardener",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "binder",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "test",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_salt_bid_comparison_001",
+    "lineage_id": "salt_bid_comparison",
+    "family": "mixing",
+    "constraint_count": 3,
+    "text": "A lab seeks the cheapest mineral blend from two bids. Let x1 be kg of blend H and x2 kg of blend L. Orders use continuous nonnegative amounts. A kg of H costs {objective_x1} EUR and contains {constraint_1_x1} g sodium, {constraint_2_x1} g magnesium and {constraint_3_x1} g potassium. A kg of L costs {objective_x2} EUR and contains {constraint_1_x2} g sodium, {constraint_2_x2} g magnesium and {constraint_3_x2} g potassium. The lab needs at least {rhs_1} g sodium, {rhs_2} g magnesium and {rhs_3} g potassium in the order. Formulate the problem of minimizing total purchase cost.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "blend H",
+        "unit": "kg"
+      },
+      {
+        "name": "x2",
+        "meaning": "blend L",
+        "unit": "kg"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/kg",
+        "EUR/kg"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "sodium",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "magnesium",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "potassium",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_beverage_deficits_001",
+    "lineage_id": "beverage_deficits",
+    "family": "mixing",
+    "constraint_count": 3,
+    "text": "A beverage maker wants to buy two liquid bases to cover the following shortages. For each ingredient the sheet gives the shortage in g and the contributions in g per litre of base A and base B, in that order.\nMalt extract: shortage {rhs_1}, contributions {constraint_1_x1} and {constraint_1_x2}.\nCitrus extract: shortage {rhs_2}, contributions {constraint_2_x1} and {constraint_2_x2}.\nYeast nutrient: shortage {rhs_3}, contributions {constraint_3_x1} and {constraint_3_x2}.\nThe purchase must cover each shortage in full. Take x1 as litres of A and x2 as litres of B, both continuous and nonnegative. Use prices {objective_x1} EUR/L for A and {objective_x2} EUR/L for B. Formulate the problem of minimizing total cost.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "base A",
+        "unit": "L"
+      },
+      {
+        "name": "x2",
+        "meaning": "base B",
+        "unit": "L"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/L",
+        "EUR/L"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "malt extract",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "citrus extract",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "yeast nutrient",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "train",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_potting_reverse_invoice_001",
+    "lineage_id": "potting_reverse_invoice",
+    "family": "mixing",
+    "constraint_count": 3,
+    "text": "A nursery must fulfil specifications for a potting mix. Let x1 and x2 be nonnegative real kg of medium S and medium T respectively. The delivered amounts of perlite, compost and coconut fibre must individually reach {rhs_1} g, {rhs_2} g and {rhs_3} g. Medium T supplies {constraint_1_x2} g, {constraint_2_x2} g and {constraint_3_x2} g per kg, in that order. Medium S supplies {constraint_1_x1} g, {constraint_2_x1} g and {constraint_3_x1} g per kg. Every kg of T is invoiced at {objective_x2} EUR and every kg of S at {objective_x1} EUR. Formulate the purchase problem with the smallest total invoice.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "medium S",
+        "unit": "kg"
+      },
+      {
+        "name": "x2",
+        "meaning": "medium T",
+        "unit": "kg"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/kg",
+        "EUR/kg"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "perlite",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "compost",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "coconut fibre",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "g/kg",
+          "g/kg"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "validation",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  },
+  {
+    "template_id": "mixing_ink_restock_tuples_001",
+    "lineage_id": "ink_restock_tuples",
+    "family": "mixing",
+    "constraint_count": 3,
+    "text": "An ink lab orders stock inks C and D. Track cyan dye, violet dye and stabilizer in that order. The purchase must supply no less than ({rhs_1}, {rhs_2}, {rhs_3}) g for these three ingredients. One litre of D supplies ({constraint_1_x2}, {constraint_2_x2}, {constraint_3_x2}) g and one litre of C supplies ({constraint_1_x1}, {constraint_2_x1}, {constraint_3_x1}) g. Assign x1 to litres of C and x2 to litres of D, both continuous and nonnegative. A litre of C costs {objective_x1} EUR and a litre of D costs {objective_x2} EUR. Formulate the problem of minimizing total purchase cost.",
+    "variables": [
+      {
+        "name": "x1",
+        "meaning": "stock ink C",
+        "unit": "L"
+      },
+      {
+        "name": "x2",
+        "meaning": "stock ink D",
+        "unit": "L"
+      }
+    ],
+    "objective": {
+      "meaning": "total purchase cost",
+      "sense": "min",
+      "unit": "EUR",
+      "coefficient_fields": [
+        "objective_x1",
+        "objective_x2"
+      ],
+      "coefficient_units": [
+        "EUR/L",
+        "EUR/L"
+      ]
+    },
+    "constraint_order_in_text": [
+      1,
+      2,
+      3
+    ],
+    "constraint_mapping": [
+      {
+        "position": 1,
+        "reference_constraint_index": 0,
+        "meaning": "cyan dye",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_1_x1",
+          "constraint_1_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_1",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 2,
+        "reference_constraint_index": 1,
+        "meaning": "violet dye",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_2_x1",
+          "constraint_2_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_2",
+        "rhs_unit": "g"
+      },
+      {
+        "position": 3,
+        "reference_constraint_index": 2,
+        "meaning": "stabilizer",
+        "sense": ">=",
+        "coefficient_fields": [
+          "constraint_3_x1",
+          "constraint_3_x2"
+        ],
+        "coefficient_units": [
+          "g/L",
+          "g/L"
+        ],
+        "rhs_field": "rhs_3",
+        "rhs_unit": "g"
+      }
+    ],
+    "status": "accepted",
+    "provenance": {
+      "author": "Codex",
+      "date": "2026-11-25"
+    },
+    "split": "test",
+    "review": {
+      "reviewed_by": "Marc",
+      "date": "2026-11-25",
+      "method": "distinct-value diagnostic rendering in relecture_rapide.md"
+    }
+  }
+]
