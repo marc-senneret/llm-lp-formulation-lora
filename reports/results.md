@@ -79,4 +79,4 @@ Le protocole est fixé avant exécution dans [diagnostic_sens_contraintes.md](di
 
 ## Reproductibilité
 
-Environnement : Windows 11, RTX 4060 (8 Go), torch 2.8.0+cu128, transformers 5.22.1, peft 0.21.2, SciPy 1.16.1. Les commandes sont dans le [README](../README.md). Le journal complet des décisions et des mesures est dans [learning_notes.md](learning_notes.md). Les prédictions brutes et les journaux d'entraînement sont dans `runs/` (non versionné) : `base_*_v1.json`, `lora_*_v1.json`, `lora_v1/training.json`, `probe_sense_lora_v1.json`.
+Environnement : Windows 11, RTX 4060 (8 Go), torch 2.8.0+cu128, transformers 5.22.1, peft 0.21.2, SciPy 1.16.1. Les commandes sont dans le [README](../README.md). Le journal complet des décisions et des mesures est dans [learning_notes.md](learning_notes.md). Les prédictions brutes et les journaux sont versionnés dans `runs/` : `base_*_v1.json`, `lora_*_v1.json`, `lora_v1/training.json` et `probe_sense_lora_v1.json`. Les poids de l'adaptateur (17 Mo) ne le sont pas.
