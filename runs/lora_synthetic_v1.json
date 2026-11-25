@@ -1,0 +1,1044 @@
+{
+  "dataset": "data/test.jsonl",
+  "dataset_sha256_utf8_lf": "7a35640ea10e5d5b02f60d585f50ced641492191c73b7ad1c30e6b5f680908cf",
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "adapter": "runs/lora_v1",
+  "dtype": "torch.bfloat16",
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "torch": "2.8.0+cu128",
+  "transformers": "5.22.1",
+  "scipy": "1.16.1",
+  "system_prompt": "Formulate the problem in the statement. Return only one JSON\nobject, with no markdown or explanation. Use exactly these keys:\n- \"variables\": [\"x1\", \"x2\"].\n- \"objective\": an object with \"sense\" (\"min\" or \"max\") and \"coefficients\"\n  (two numbers, in x1, x2 order).\n- \"constraints\": an array of two or three objects, each with \"coefficients\"\n  (two numbers, in x1, x2 order), \"sense\" (\"<=\", \">=\", or \"=\"), and \"rhs\"\n  (a number). Include every stated constraint apart from variable bounds.\n- \"bounds\": one [lower, upper] pair per variable in x1, x2 order. Use null\n  for an unbounded upper endpoint.\nUse the units of the statement and keep each variable's stated meaning.",
+  "generation": {
+    "max_new_tokens": 256,
+    "do_sample": false,
+    "pad_token_id": 151643,
+    "eos_token_id": [
+      151645,
+      151643
+    ],
+    "transformers_version": "5.22.1"
+  },
+  "batch_size": 8,
+  "elapsed_seconds": 209.42,
+  "total": 80,
+  "scores": {
+    "format": 77,
+    "formulation": 35,
+    "solve": 77,
+    "reference": 37
+  },
+  "predictions": [
+    {
+      "id": "test_production_2c_001",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [34, 16]}, \"constraints\": [{\"coefficients\": [9, 7], \"sense\": \"<=\", \"rhs\": 194}, {\"coefficients\": [5, 2], \"sense\": \"<=\", \"rhs\": 56}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_002",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [10, 46]}, \"constraints\": [{\"coefficients\": [1, 8], \"sense\": \"<=\", \"rhs\": 73}, {\"coefficients\": [1, 7], \"sense\": \"<=\", \"rhs\": 46}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_production_2c_003",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [46, 42]}, \"constraints\": [{\"coefficients\": [5, 4], \"sense\": \"<=\", \"rhs\": 133}, {\"coefficients\": [3, 6], \"sense\": \"<=\", \"rhs\": 102}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 96,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_004",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [42, 38]}, \"constraints\": [{\"coefficients\": [8, 2], \"sense\": \"<=\", \"rhs\": 64}, {\"coefficients\": [4, 7], \"sense\": \"<=\", \"rhs\": 87}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_005",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [37, 46]}, \"constraints\": [{\"coefficients\": [2, 7], \"sense\": \"<=\", \"rhs\": 76}, {\"coefficients\": [6, 4], \"sense\": \"<=\", \"rhs\": 48}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_006",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [38, 12]}, \"constraints\": [{\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 97}, {\"coefficients\": [4, 2], \"sense\": \"<=\", \"rhs\": 144}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_007",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [38, 50]}, \"constraints\": [{\"coefficients\": [4, 3], \"sense\": \"<=\", \"rhs\": 104}, {\"coefficients\": [1, 3], \"sense\": \"<=\", \"rhs\": 46}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_008",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [6, 7]}, \"constraints\": [{\"coefficients\": [2, 5], \"sense\": \"<=\", \"rhs\": 80}, {\"coefficients\": [8, 2], \"sense\": \"<=\", \"rhs\": 176}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 93,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_009",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [40, 42]}, \"constraints\": [{\"coefficients\": [1, 9], \"sense\": \"<=\", \"rhs\": 30}, {\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 87}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_010",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [12, 35]}, \"constraints\": [{\"coefficients\": [8, 7], \"sense\": \"<=\", \"rhs\": 141}, {\"coefficients\": [2, 6], \"sense\": \"<=\", \"rhs\": 51}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_011",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [6, 45]}, \"constraints\": [{\"coefficients\": [8, 2], \"sense\": \"<=\", \"rhs\": 193}, {\"coefficients\": [4, 7], \"sense\": \"<=\", \"rhs\": 21}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_012",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [3, 34]}, \"constraints\": [{\"coefficients\": [1, 9], \"sense\": \"<=\", \"rhs\": 170}, {\"coefficients\": [8, 8], \"sense\": \"<=\", \"rhs\": 153}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_013",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [19, 23]}, \"constraints\": [{\"coefficients\": [7, 9], \"sense\": \"<=\", \"rhs\": 62}, {\"coefficients\": [3, 4], \"sense\": \"<=\", \"rhs\": 88}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_014",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [49, 7]}, \"constraints\": [{\"coefficients\": [1, 8], \"sense\": \"<=\", \"rhs\": 34}, {\"coefficients\": [3, 7], \"sense\": \"<=\", \"rhs\": 85}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 93,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_015",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [31, 2]}, \"constraints\": [{\"coefficients\": [5, 3], \"sense\": \"<=\", \"rhs\": 119}, {\"coefficients\": [3, 6], \"sense\": \"<=\", \"rhs\": 117}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_016",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [9, 43]}, \"constraints\": [{\"coefficients\": [4, 2], \"sense\": \"<=\", \"rhs\": 140}, {\"coefficients\": [4, 2], \"sense\": \"<=\", \"rhs\": 134}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_production_2c_017",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [7, 42]}, \"constraints\": [{\"coefficients\": [8, 2], \"sense\": \"<=\", \"rhs\": 173}, {\"coefficients\": [8, 7], \"sense\": \"<=\", \"rhs\": 119}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_018",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [50, 2]}, \"constraints\": [{\"coefficients\": [5, 8], \"sense\": \"<=\", \"rhs\": 158}, {\"coefficients\": [6, 6], \"sense\": \"<=\", \"rhs\": 125}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_019",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [4, 36]}, \"constraints\": [{\"coefficients\": [3, 4], \"sense\": \"<=\", \"rhs\": 88}, {\"coefficients\": [4, 2], \"sense\": \"<=\", \"rhs\": 166}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_2c_020",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [14, 31]}, \"constraints\": [{\"coefficients\": [8, 8], \"sense\": \"<=\", \"rhs\": 23}, {\"coefficients\": [1, 7], \"sense\": \"<=\", \"rhs\": 186}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_001",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [19, 42]}, \"constraints\": [{\"coefficients\": [6, 2], \"sense\": \"<=\", \"rhs\": 140}, {\"coefficients\": [5, 1], \"sense\": \"<=\", \"rhs\": 106}, {\"coefficients\": [1, 9], \"sense\": \"<=\", \"rhs\": 168}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 119,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_002",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [21, 36]}, \"constraints\": [{\"coefficients\": [2, 7], \"sense\": \"<=\", \"rhs\": 194}, {\"coefficients\": [1, 9], \"sense\": \"<=\", \"rhs\": 184}, {\"coefficients\": [9, 7], \"sense\": \"<=\", \"rhs\": 176}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 119,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_003",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [16, 12]}, \"constraints\": [{\"coefficients\": [1, 9], \"sense\": \"<=\", \"rhs\": 113}, {\"coefficients\": [9, 5], \"sense\": \"<=\", \"rhs\": 158}, {\"coefficients\": [1, 1], \"sense\": \"<=\", \"rhs\": 89}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_004",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [22, 8]}, \"constraints\": [{\"coefficients\": [9, 3], \"sense\": \"<=\", \"rhs\": 44}, {\"coefficients\": [7, 4], \"sense\": \"<=\", \"rhs\": 130}, {\"coefficients\": [2, 5], \"sense\": \"<=\", \"rhs\": 35}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 116,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_005",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [19, 27]}, \"constraints\": [{\"coefficients\": [8, 4], \"sense\": \"<=\", \"rhs\": 113}, {\"coefficients\": [1, 6], \"sense\": \"<=\", \"rhs\": 95}, {\"coefficients\": [1, 2], \"sense\": \"<=\", \"rhs\": 53}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_006",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [47, 20]}, \"constraints\": [{\"coefficients\": [9, 9], \"sense\": \"<=\", \"rhs\": 192}, {\"coefficients\": [3, 1], \"sense\": \"<=\", \"rhs\": 28}, {\"coefficients\": [9, 6], \"sense\": \"<=\", \"rhs\": 190}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_007",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [9, 11]}, \"constraints\": [{\"coefficients\": [8, 7], \"sense\": \"<=\", \"rhs\": 127}, {\"coefficients\": [1, 7], \"sense\": \"<=\", \"rhs\": 56}, {\"coefficients\": [6, 6], \"sense\": \"<=\", \"rhs\": 58}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 116,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_008",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [42, 24]}, \"constraints\": [{\"coefficients\": [3, 9], \"sense\": \"<=\", \"rhs\": 188}, {\"coefficients\": [3, 1], \"sense\": \"<=\", \"rhs\": 134}, {\"coefficients\": [6, 4], \"sense\": \"<=\", \"rhs\": 141}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 119,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_production_3c_009",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [40, 24]}, \"constraints\": [{\"coefficients\": [6, 2], \"sense\": \"<=\", \"rhs\": 172}, {\"coefficients\": [3, 8], \"sense\": \"<=\", \"rhs\": 89}, {\"coefficients\": [4, 7], \"sense\": \"<=\", \"rhs\": 159}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_010",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [48, 22]}, \"constraints\": [{\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 24}, {\"coefficients\": [1, 6], \"sense\": \"<=\", \"rhs\": 100}, {\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 112}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_011",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [4, 11]}, \"constraints\": [{\"coefficients\": [8, 8], \"sense\": \"<=\", \"rhs\": 86}, {\"coefficients\": [5, 2], \"sense\": \"<=\", \"rhs\": 133}, {\"coefficients\": [4, 2], \"sense\": \"<=\", \"rhs\": 110}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_012",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [42, 26]}, \"constraints\": [{\"coefficients\": [3, 4], \"sense\": \"<=\", \"rhs\": 64}, {\"coefficients\": [9, 8], \"sense\": \"<=\", \"rhs\": 23}, {\"coefficients\": [7, 9], \"sense\": \"<=\", \"rhs\": 119}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_013",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [15, 7]}, \"constraints\": [{\"coefficients\": [9, 2], \"sense\": \"<=\", \"rhs\": 200}, {\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 26}, {\"coefficients\": [7, 1], \"sense\": \"<=\", \"rhs\": 113}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_014",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [7, 42]}, \"constraints\": [{\"coefficients\": [9, 2], \"sense\": \"<=\", \"rhs\": 111}, {\"coefficients\": [4, 7], \"sense\": \"<=\", \"rhs\": 125}, {\"coefficients\": [4, 7], \"sense\": \"<=\", \"rhs\": 58}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_015",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [4, 29]}, \"constraints\": [{\"coefficients\": [9, 7], \"sense\": \"<=\", \"rhs\": 93}, {\"coefficients\": [5, 8], \"sense\": \"<=\", \"rhs\": 23}, {\"coefficients\": [9, 7], \"sense\": \"<=\", \"rhs\": 183}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 116,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_016",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [8, 39]}, \"constraints\": [{\"coefficients\": [3, 4], \"sense\": \"<=\", \"rhs\": 116}, {\"coefficients\": [7, 5], \"sense\": \"<=\", \"rhs\": 182}, {\"coefficients\": [5, 8], \"sense\": \"<=\", \"rhs\": 62}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": true,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent."
+      ]
+    },
+    {
+      "id": "test_production_3c_017",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [36, 1]}, \"constraints\": [{\"coefficients\": [4, 6], \"sense\": \"<=\", \"rhs\": 58}, {\"coefficients\": [7, 3], \"sense\": \"<=\", \"rhs\": 170}, {\"coefficients\": [2, 5], \"sense\": \"<=\", \"rhs\": 180}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_018",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [45, 32]}, \"constraints\": [{\"coefficients\": [7, 4], \"sense\": \"<=\", \"rhs\": 136}, {\"coefficients\": [8, 5], \"sense\": \"<=\", \"rhs\": 152}, {\"coefficients\": [4, 2], \"sense\": \"<=\", \"rhs\": 27}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_production_3c_019",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [38, 47]}, \"constraints\": [{\"coefficients\": [3, 1], \"sense\": \"<=\", \"rhs\": 193}, {\"coefficients\": [1, 4], \"sense\": \"<=\", \"rhs\": 141}, {\"coefficients\": [9, 7], \"sense\": \"<=\", \"rhs\": 161}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 119,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": true,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent."
+      ]
+    },
+    {
+      "id": "test_production_3c_020",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"max\", \"coefficients\": [4, 19]}, \"constraints\": [{\"coefficients\": [5, 1], \"sense\": \"<=\", \"rhs\": 192}, {\"coefficients\": [8, 6], \"sense\": \"<=\", \"rhs\": 129}, {\"coefficients\": [3, 4], \"sense\": \"<=\", \"rhs\": 21}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": true,
+      "solve": true,
+      "reference": true,
+      "issues": []
+    },
+    {
+      "id": "test_mixing_2c_001",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [10, 34]}, \"constraints\": [{\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 33}, {\"coefficients\": [1, 8], \"sense\": \"<=\", \"rhs\": 21}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_002",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [27, 36]}, \"constraints\": [{\"coefficients\": [3, 8], \"sense\": \"<=\", \"rhs\": 179}, {\"coefficients\": [9, 6], \"sense\": \"<=\", \"rhs\": 164}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 96,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_003",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [26, 32]}, \"constraints\": [{\"coefficients\": [1, 9], \"sense\": \"<=\", \"rhs\": 68}, {\"coefficients\": [5, 1], \"sense\": \"<=\", \"rhs\": 52}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_004",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [12, 28]}, \"constraints\": [{\"coefficients\": [4, 1], \"sense\": \"<=\", \"rhs\": 70}, {\"coefficients\": [1, 4], \"sense\": \"<=\", \"rhs\": 98}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_005",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [20, 35]}, \"constraints\": [{\"coefficients\": [5, 4], \"sense\": \"<=\", \"rhs\": 38}, {\"coefficients\": [2, 7], \"sense\": \"<=\", \"rhs\": 45}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_006",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [23, 31]}, \"constraints\": [{\"coefficients\": [4, 5], \"sense\": \"<=\", \"rhs\": 173}, {\"coefficients\": [7, 3], \"sense\": \"<=\", \"rhs\": 115}], \"bounds\": [[0, None], [0, None]]}",
+      "generated_tokens": 96,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 224 (char 223)"
+      ]
+    },
+    {
+      "id": "test_mixing_2c_007",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [18, 50]}, \"constraints\": [{\"coefficients\": [2, 3], \"sense\": \"<=\", \"rhs\": 175}, {\"coefficients\": [9, 1], \"sense\": \"<=\", \"rhs\": 27}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_008",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [7, 25]}, \"constraints\": [{\"coefficients\": [1, 8], \"sense\": \"<=\", \"rhs\": 128}, {\"coefficients\": [8, 1], \"sense\": \"<=\", \"rhs\": 96}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_009",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [13, 22]}, \"constraints\": [{\"coefficients\": [4, 1], \"sense\": \"<=\", \"rhs\": 67}, {\"coefficients\": [3, 8], \"sense\": \"<=\", \"rhs\": 121}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_010",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [40, 20]}, \"constraints\": [{\"coefficients\": [9, 6], \"sense\": \"<=\", \"rhs\": 68}, {\"coefficients\": [2, 9], \"sense\": \"<=\", \"rhs\": 91}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_011",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [27, 5]}, \"constraints\": [{\"coefficients\": [2, 3], \"sense\": \"<=\", \"rhs\": 171}, {\"coefficients\": [3, 3], \"sense\": \"<=\", \"rhs\": 126}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_012",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [23, 48]}, \"constraints\": [{\"coefficients\": [1, 9], \"sense\": \"<=\", \"rhs\": 57}, {\"coefficients\": [2, 3], \"sense\": \"<=\", \"rhs\": 180}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_013",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [23, 40]}, \"constraints\": [{\"coefficients\": [9, 6], \"sense\": \"<=\", \"rhs\": 132}, {\"coefficients\": [5, 4], \"sense\": \"<=\", \"rhs\": 105}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 96,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_014",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [5, 39]}, \"constraints\": [{\"coefficients\": [6, 8], \"sense\": \"<=\", \"rhs\": 199}, {\"coefficients\": [2, 7], \"sense\": \"<=\", \"rhs\": 140}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_015",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [10, 1]}, \"constraints\": [{\"coefficients\": [6, 5], \"sense\": \"<=\", \"rhs\": 116}, {\"coefficients\": [5, 5], \"sense\": \"<=\", \"rhs\": 73}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_016",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [48, 49]}, \"constraints\": [{\"coefficients\": [8, 3], \"sense\": \"<=\", \"rhs\": 108}, {\"coefficients\": [6, 6], \"sense\": \"<=\", \"rhs\": 22}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_017",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [47, 30]}, \"constraints\": [{\"coefficients\": [3, 7], \"sense\": \"<=\", \"rhs\": 25}, {\"coefficients\": [4, 4], \"sense\": \"<=\", \"rhs\": 102}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_018",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [38, 21]}, \"constraints\": [{\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 105}, {\"coefficients\": [1, 7], \"sense\": \"<=\", \"rhs\": 146}], \"bounds\": [[0, None], [0, None]]}",
+      "generated_tokens": 96,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 224 (char 223)"
+      ]
+    },
+    {
+      "id": "test_mixing_2c_019",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [7, 7]}, \"constraints\": [{\"coefficients\": [3, 1], \"sense\": \"<=\", \"rhs\": 60}, {\"coefficients\": [3, 3], \"sense\": \"<=\", \"rhs\": 151}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 93,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_2c_020",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [39, 20]}, \"constraints\": [{\"coefficients\": [9, 5], \"sense\": \"<=\", \"rhs\": 120}, {\"coefficients\": [5, 5], \"sense\": \"<=\", \"rhs\": 75}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 95,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_001",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [30, 31]}, \"constraints\": [{\"coefficients\": [9, 8], \"sense\": \"<=\", \"rhs\": 28}, {\"coefficients\": [9, 3], \"sense\": \"<=\", \"rhs\": 119}, {\"coefficients\": [2, 7], \"sense\": \"<=\", \"rhs\": 45}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_002",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [5, 4]}, \"constraints\": [{\"coefficients\": [9, 1], \"sense\": \"<=\", \"rhs\": 109}, {\"coefficients\": [4, 9], \"sense\": \"<=\", \"rhs\": 27}, {\"coefficients\": [9, 3], \"sense\": \"<=\", \"rhs\": 96}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 115,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_003",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [41, 44]}, \"constraints\": [{\"coefficients\": [5, 4, 2], \"sense\": \"<=\", \"rhs\": 192}, {\"coefficients\": [3, 6, 6], \"sense\": \"<=\", \"rhs\": 152}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 102,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "Schéma — Number of coefficients in constraint is not equal to 2"
+      ]
+    },
+    {
+      "id": "test_mixing_3c_004",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [43, 23]}, \"constraints\": [{\"coefficients\": [9, 8], \"sense\": \"<=\", \"rhs\": 141}, {\"coefficients\": [7, 2], \"sense\": \"<=\", \"rhs\": 33}, {\"coefficients\": [6, 1], \"sense\": \"<=\", \"rhs\": 39}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_005",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [6, 12]}, \"constraints\": [{\"coefficients\": [1, 3], \"sense\": \"<=\", \"rhs\": 39}, {\"coefficients\": [3, 7], \"sense\": \"<=\", \"rhs\": 117}, {\"coefficients\": [1, 8], \"sense\": \"<=\", \"rhs\": 156}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_006",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [36, 47]}, \"constraints\": [{\"coefficients\": [3, 9], \"sense\": \"<=\", \"rhs\": 137}, {\"coefficients\": [1, 1], \"sense\": \"<=\", \"rhs\": 129}, {\"coefficients\": [4, 4], \"sense\": \"<=\", \"rhs\": 177}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 119,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_007",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [24, 13]}, \"constraints\": [{\"coefficients\": [4, 2], \"sense\": \"<=\", \"rhs\": 109}, {\"coefficients\": [1, 8], \"sense\": \"<=\", \"rhs\": 178}, {\"coefficients\": [3, 8], \"sense\": \"<=\", \"rhs\": 139}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 119,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_008",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [8, 17]}, \"constraints\": [{\"coefficients\": [7, 3], \"sense\": \"<=\", \"rhs\": 57}, {\"coefficients\": [4, 1], \"sense\": \"<=\", \"rhs\": 147}, {\"coefficients\": [9, 1], \"sense\": \"<=\", \"rhs\": 106}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_009",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [33, 32]}, \"constraints\": [{\"coefficients\": [8, 2], \"sense\": \"<=\", \"rhs\": 120}, {\"coefficients\": [3, 7], \"sense\": \"<=\", \"rhs\": 182}, {\"coefficients\": [4, 6], \"sense\": \"<=\", \"rhs\": 56}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_010",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [18, 20]}, \"constraints\": [{\"coefficients\": [8, 7], \"sense\": \"<=\", \"rhs\": 32}, {\"coefficients\": [4, 7], \"sense\": \"<=\", \"rhs\": 175}, {\"coefficients\": [9, 6], \"sense\": \"<=\", \"rhs\": 155}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_011",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [34, 4]}, \"constraints\": [{\"coefficients\": [7, 6], \"sense\": \"<=\", \"rhs\": 170}, {\"coefficients\": [1, 4], \"sense\": \"<=\", \"rhs\": 58}, {\"coefficients\": [3, 3], \"sense\": \"<=\", \"rhs\": 174}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_012",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [2, 18]}, \"constraints\": [{\"coefficients\": [8, 5], \"sense\": \"<=\", \"rhs\": 161}, {\"coefficients\": [6, 8], \"sense\": \"<=\", \"rhs\": 71}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 94,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_013",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [34, 35]}, \"constraints\": [{\"coefficients\": [8, 9], \"sense\": \"<=\", \"rhs\": 69}, {\"coefficients\": [2, 2], \"sense\": \"<=\", \"rhs\": 185}, {\"coefficients\": [1, 1], \"sense\": \"<=\", \"rhs\": 144}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_014",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [8, 35]}, \"constraints\": [{\"coefficients\": [5, 3], \"sense\": \"<=\", \"rhs\": 57}, {\"coefficients\": [4, 5], \"sense\": \"<=\", \"rhs\": 64}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 93,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_015",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [28, 45]}, \"constraints\": [{\"coefficients\": [4, 9], \"sense\": \"<=\", \"rhs\": 64}, {\"coefficients\": [2, 8], \"sense\": \"<=\", \"rhs\": 172}, {\"coefficients\": [4, 9], \"sense\": \"<=\", \"rhs\": 183}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_016",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [19, 37]}, \"constraints\": [{\"coefficients\": [5, 5], \"sense\": \"<=\", \"rhs\": 196}, {\"coefficients\": [5, 2], \"sense\": \"<=\", \"rhs\": 43}, {\"coefficients\": [1, 1], \"sense\": \"<=\", \"rhs\": 84}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 117,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_017",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [10, 30]}, \"constraints\": [{\"coefficients\": [3, 1], \"sense\": \"<=\", \"rhs\": 129}, {\"coefficients\": [9, 1], \"sense\": \"<=\", \"rhs\": 97}, {\"coefficients\": [9, 3], \"sense\": \"<=\", \"rhs\": 173}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_018",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [22, 48]}, \"constraints\": [{\"coefficients\": [2, 3], \"sense\": \"<=\", \"rhs\": 173}, {\"coefficients\": [7, 6], \"sense\": \"<=\", \"rhs\": 112}, {\"coefficients\": [3, 3], \"sense\": \"<=\", \"rhs\": 29}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_019",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [13, 9]}, \"constraints\": [{\"coefficients\": [4, 6], \"sense\": \"<=\", \"rhs\": 55}, {\"coefficients\": [4, 3], \"sense\": \"<=\", \"rhs\": 166}, {\"coefficients\": [4, 6], \"sense\": \"<=\", \"rhs\": 63}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 116,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    },
+    {
+      "id": "test_mixing_3c_020",
+      "raw_response": "{\"variables\": [\"x1\", \"x2\"], \"objective\": {\"sense\": \"min\", \"coefficients\": [23, 42]}, \"constraints\": [{\"coefficients\": [5, 5], \"sense\": \"<=\", \"rhs\": 195}, {\"coefficients\": [9, 4], \"sense\": \"<=\", \"rhs\": 26}, {\"coefficients\": [6, 6], \"sense\": \"<=\", \"rhs\": 199}], \"bounds\": [[0, null], [0, null]]}",
+      "generated_tokens": 118,
+      "ended_with_eos": true,
+      "format": true,
+      "formulation": false,
+      "solve": true,
+      "reference": false,
+      "issues": [
+        "Formulation — une ou plusieurs contraintes diffèrent.",
+        "Référence — la solution prédite n'est pas faisable ou optimale sur la référence."
+      ]
+    }
+  ]
+}

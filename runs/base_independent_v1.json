@@ -1,0 +1,292 @@
+{
+  "dataset": "data/human_test.jsonl",
+  "dataset_sha256_utf8_lf": "9d3ddd8e2d3fd240fa1499991c7b6fa1bbe6155640aea221cd02039ffcc6b5ea",
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "dtype": "torch.bfloat16",
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "torch": "2.8.0+cu128",
+  "transformers": "5.22.1",
+  "scipy": "1.16.1",
+  "system_prompt": "Formulate the problem in the statement. Return only one JSON\nobject, with no markdown or explanation. Use exactly these keys:\n- \"variables\": [\"x1\", \"x2\"].\n- \"objective\": an object with \"sense\" (\"min\" or \"max\") and \"coefficients\"\n  (two numbers, in x1, x2 order).\n- \"constraints\": an array of two or three objects, each with \"coefficients\"\n  (two numbers, in x1, x2 order), \"sense\" (\"<=\", \">=\", or \"=\"), and \"rhs\"\n  (a number). Include every stated constraint apart from variable bounds.\n- \"bounds\": one [lower, upper] pair per variable in x1, x2 order. Use null\n  for an unbounded upper endpoint.\nUse the units of the statement and keep each variable's stated meaning.",
+  "generation": {
+    "max_new_tokens": 256,
+    "do_sample": false,
+    "pad_token_id": 151643,
+    "eos_token_id": [
+      151645,
+      151643
+    ],
+    "transformers_version": "5.22.1"
+  },
+  "elapsed_seconds": 252.33,
+  "total": 20,
+  "scores": {
+    "format": 0,
+    "formulation": 0,
+    "solve": 0,
+    "reference": 0
+  },
+  "predictions": [
+    {
+      "id": "independent_production_001",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [43, 37]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [5, 3],\n      \"sense\": \"<=\",\n      \"rhs\": 76\n    },\n    {\n      \"coefficients\": [2, 4],\n      \"sense\": \"<=\",\n      \"rhs\": 58\n    }\n  ],\n  \"bounds\": [null, null]\n}\n```",
+      "generated_tokens": 122,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_002",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [0, 1]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [11, 7],\n      \"sense\": \"<=\",\n      \"rhs\": 184\n    },\n    {\n      \"coefficients\": [2, 4],\n      \"sense\": \"<=\",\n      \"rhs\": 61\n    }\n  ],\n  \"bounds\": [[null, null], [null, null]]\n}\n```",
+      "generated_tokens": 127,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_003",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [4.75, 6.2]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [0.8, 0.65],\n      \"sense\": \"<=\",\n      \"rhs\": 107\n    },\n    {\n      \"coefficients\": [0.9, 1.6],\n      \"sense\": \"<=\",\n      \"rhs\": 176\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 148,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_004",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [28, 13]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [125, 65],\n      \"sense\": \"<=\",\n      \"rhs\": 2360\n    },\n    {\n      \"coefficients\": [1, 1],\n      \"sense\": \"=\",\n      \"rhs\": 22\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 138,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_005",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [2.30, 5.10]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [2, 4],\n      \"sense\": \"<=\",\n      \"rhs\": 156\n    },\n    {\n      \"coefficients\": [0.5, 1.25],\n      \"sense\": \"<=\",\n      \"rhs\": 60\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 144,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_006",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [8, 7]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [3, 2],\n      \"sense\": \"<=\",\n      \"rhs\": 112\n    },\n    {\n      \"coefficients\": [1, 2],\n      \"sense\": \"<=\",\n      \"rhs\": 82\n    },\n    {\n      \"coefficients\": [1, 1],\n      \"sense\": \"<=\",\n      \"rhs\": 38\n    }\n  ],\n  \"bounds\": [[0, null], [0, null]]\n}\n```",
+      "generated_tokens": 156,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_007",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [76, 49]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [1, -1],\n      \"sense\": \"<=\",\n      \"rhs\": 19\n    },\n    {\n      \"coefficients\": [-5, -3],\n      \"sense\": \"<=\",\n      \"rhs\": 94\n    },\n    {\n      \"coefficients\": [-2, -3],\n      \"sense\": \"<=\",\n      \"rhs\": 68\n    }\n  ],\n  \"bounds\": [[0, null], [0, null]]\n}\n```",
+      "generated_tokens": 157,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_008",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [17, 12]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [6, 25],\n      \"sense\": \"<=\",\n      \"rhs\": 420\n    },\n    {\n      \"coefficients\": [6, 25],\n      \"sense\": \"=\",\n      \"rhs\": 108\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 137,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_009",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [91, 74]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [51, 3.5],\n      \"sense\": \"<=\",\n      \"rhs\": 0\n    },\n    {\n      \"coefficients\": [289, 12],\n      \"sense\": \"<=\",\n      \"rhs\": 0\n    },\n    {\n      \"coefficients\": [35, 1],\n      \"sense\": \"<=\",\n      \"rhs\": 0\n    }\n  ],\n  \"bounds\": [[null, null], [null, null]]\n}\n```",
+      "generated_tokens": 161,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_production_010",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"max\",\n    \"coefficients\": [32, 38]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [1.8, 1.1],\n      \"sense\": \"<=\",\n      \"rhs\": 42\n    },\n    {\n      \"coefficients\": [4, 3],\n      \"sense\": \"<=\",\n      \"rhs\": 134\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 139,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_001",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [16, 5.4]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [24, 8],\n      \"sense\": \"<=\",\n      \"rhs\": 250\n    },\n    {\n      \"coefficients\": [9, 21],\n      \"sense\": \"<=\",\n      \"rhs\": 180\n    }\n  ],\n  \"bounds\": [\n    {\"variable\": \"x1\", \"lower\": 0},\n    {\"variable\": \"x2\", \"upper\": null}\n  ]\n}\n```",
+      "generated_tokens": 152,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_002",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [2.80, 3.90]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [9, 4],\n      \"sense\": \"<=\",\n      \"rhs\": 260\n    },\n    {\n      \"coefficients\": [1, 1],\n      \"sense\": \"=\",\n      \"rhs\": 40\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 138,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_003",
+      "raw_response": "{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [18, 25]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [13, 8],\n      \"sense\": \"<=\",\n      \"rhs\": 143\n    },\n    {\n      \"coefficients\": [6, 19],\n      \"sense\": \"<=\",\n      \"rhs\": 168\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}",
+      "generated_tokens": 134,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "Schéma — Bound is not a list"
+      ]
+    },
+    {
+      "id": "independent_mixing_004",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [14, 3]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [1, -1],\n      \"sense\": \"<=\",\n      \"rhs\": 11.7\n    },\n    {\n      \"coefficients\": [-0.9, -0.78],\n      \"sense\": \">=\",\n      \"rhs\": 103 / 1000\n    }\n  ],\n  \"bounds\": [[null, null], [null, null]]\n}\n```",
+      "generated_tokens": 140,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_005",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [33, 15]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [4.25, 3.80],\n      \"sense\": \"<=\",\n      \"rhs\": 290\n    },\n    {\n      \"coefficients\": [7, 19],\n      \"sense\": \"<=\",\n      \"rhs\": 171\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 143,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_006",
+      "raw_response": "{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [3.2, 4.1]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [1, 0],\n      \"sense\": \"<=\",\n      \"rhs\": 27\n    },\n    {\n      \"coefficients\": [0, 1],\n      \"sense\": \"<=\",\n      \"rhs\": 226\n    },\n    {\n      \"coefficients\": [1, 0],\n      \"sense\": \"<=\",\n      \"rhs\": 142\n    }\n  ],\n  \"bounds\": [[null, null], [null, null]]\n}",
+      "generated_tokens": 157,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "Schéma — Lower bound is not a number"
+      ]
+    },
+    {
+      "id": "independent_mixing_007",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [7, 9]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [19, 6],\n      \"sense\": \"<=\",\n      \"rhs\": 173\n    },\n    {\n      \"coefficients\": [3, 17],\n      \"sense\": \"<=\",\n      \"rhs\": 147\n    },\n    {\n      \"coefficients\": [10, 8],\n      \"sense\": \"<=\",\n      \"rhs\": 154\n    }\n  ],\n  \"bounds\": [{\"lower\": 0, \"upper\": null}, {\"lower\": 0, \"upper\": null}]\n}\n```",
+      "generated_tokens": 173,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_008",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [0, -92]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [-38, -27],\n      \"sense\": \"<=\",\n      \"rhs\": 46\n    },\n    {\n      \"coefficients\": [-24, -9],\n      \"sense\": \"<=\",\n      \"rhs\": 2.85\n    }\n  ],\n  \"bounds\": [[null, null], [null, null]]\n}\n```",
+      "generated_tokens": 131,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_009",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [11.40 * x1 + 6.50 * x2]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [11.40, 6.50],\n      \"sense\": \"<=\",\n      \"rhs\": 186\n    },\n    {\n      \"coefficients\": [5, 12],\n      \"sense\": \"<=\",\n      \"rhs\": 101\n    },\n    {\n      \"coefficients\": [1.2, 0.8],\n      \"sense\": \"<=\",\n      \"rhs\": 10.4\n    }\n  ],\n  \"bounds\": [\n    {\"x1\": null},\n    {\"x2\": null}\n  ]\n}\n```",
+      "generated_tokens": 191,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    },
+    {
+      "id": "independent_mixing_010",
+      "raw_response": "```json\n{\n  \"variables\": [\"x1\", \"x2\"],\n  \"objective\": {\n    \"sense\": \"min\",\n    \"coefficients\": [8.50, 12.70]\n  },\n  \"constraints\": [\n    {\n      \"coefficients\": [0.68, 0.79],\n      \"sense\": \"<=\",\n      \"rhs\": 8.4\n    },\n    {\n      \"coefficients\": [0.24, 0.57],\n      \"sense\": \"<=\",\n      \"rhs\": 5.1\n    }\n  ],\n  \"bounds\": [\n    {\"lb\": null},\n    {\"ub\": null}\n  ]\n}\n```",
+      "generated_tokens": 151,
+      "ended_with_eos": true,
+      "format": false,
+      "formulation": false,
+      "solve": false,
+      "reference": false,
+      "issues": [
+        "JSON — Invalid JSON: Expecting value: line 1 column 1 (char 0)"
+      ]
+    }
+  ]
+}

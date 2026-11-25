@@ -1,0 +1,42 @@
+{
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+  "system_prompt": "Formulate the problem in the statement. Return only one JSON\nobject, with no markdown or explanation. Use exactly these keys:\n- \"variables\": [\"x1\", \"x2\"].\n- \"objective\": an object with \"sense\" (\"min\" or \"max\") and \"coefficients\"\n  (two numbers, in x1, x2 order).\n- \"constraints\": an array of two or three objects, each with \"coefficients\"\n  (two numbers, in x1, x2 order), \"sense\" (\"<=\", \">=\", or \"=\"), and \"rhs\"\n  (a number). Include every stated constraint apart from variable bounds.\n- \"bounds\": one [lower, upper] pair per variable in x1, x2 order. Use null\n  for an unbounded upper endpoint.\nUse the units of the statement and keep each variable's stated meaning.",
+  "corpus_manifest_sha256_utf8_lf": "fdf24e7eab7e9851550a0645bc73f632202450fe654b03172e1df3a01e993b63",
+  "config": {
+    "seed": 42,
+    "epochs": 1,
+    "max_sequence_length": 1024,
+    "gradient_accumulation_steps": 16,
+    "learning_rate": 0.0001,
+    "max_grad_norm": 1.0,
+    "lora": {
+      "r": 16,
+      "lora_alpha": 32,
+      "lora_dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj"
+      ]
+    }
+  },
+  "train_examples": 300,
+  "validation_examples": 60,
+  "trainable_parameters": 4358144,
+  "torch": "2.8.0+cu128",
+  "transformers": "5.22.1",
+  "peft": "0.21.2",
+  "gpu": "NVIDIA GeForce RTX 4060",
+  "elapsed_seconds": 254.95,
+  "peak_vram_bytes": 4114708480,
+  "history": [
+    {
+      "epoch": 1,
+      "optimizer_steps": 19,
+      "train_loss": 0.029201788073580263,
+      "validation_loss": 0.05124568430305629
+    }
+  ]
+}
