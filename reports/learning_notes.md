@@ -3,6 +3,10 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 25 novembre 2026 — Environnement réellement utilisé pour la v1
+
+L'étape 1A avait retenu le Python de Miniconda (3.11.4, torch 2.11.0+cu128) et aligné `requirements.txt` sur cet environnement. L'entraînement, les évaluations et la sonde de la v1 ont en fait tourné avec `C:\Python313` (Python 3.13.5), premier `python` trouvé dans le PATH : torch 2.8.0+cu128, transformers 5.22.1, peft 0.21.2, numpy 2.4.3, SciPy 1.16.1. Les journaux `runs/lora_v1/training.json` et `runs/*_v1.json` le confirment ; `runs/computer_state.json` décrit l'environnement Miniconda du 5 novembre. `requirements.txt` est aligné sur l'environnement de la v1 et réduit aux paquets importés par le code. Pour la suite, lancer les commandes avec un interpréteur explicite.
+
 ## 25 novembre 2026 — Diagnostic de l'inversion `>=` → `<=` en mélange
 
 Rapport complet : `reports/diagnostic_sens_contraintes.md`. Sonde `src/lp_llm/probe.py` exécutée sur les 4 lots, sortie dans `runs/probe_sense_lora_v1.json`.

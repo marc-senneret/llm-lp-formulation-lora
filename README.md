@@ -79,3 +79,7 @@ reports/      results, diagnostic, learning notes (French)
 runs/         predictions, training log, probe output
 tests/        schema, solver, generator, corpus and verifier tests
 ```
+
+## License
+
+MIT, see [LICENSE](LICENSE).
