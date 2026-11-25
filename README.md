@@ -1,111 +1,81 @@
-# LLM Optim LoRA
+# LP formulation with a LoRA-tuned LLM
 
-Traduire des énoncés anglais de programmation linéaire en JSON, puis comparer un modèle initial à son adaptation LoRA. Deux variables continues non négatives, deux ou trois contraintes, production/maximisation du profit et achat/minimisation du coût.
+Translate short English word problems into linear programmes (JSON), let a solver solve them, and measure what supervised LoRA fine-tuning changes. The model formulates; SciPy `linprog` (HiGHS) solves and verifies.
 
-Marc a validé les dix cas du pilote v2 et les seize gabarits du corpus synthétique. Qwen2.5-1.5B-Instruct a été adapté une époque avec LoRA sur 300 exemples. La formulation exacte stricte passe de 0/20 à 5/20 sur le lot indépendant et de 0/80 à 35/80 sur le test synthétique. Les résultats par famille et les erreurs sont dans `reports/learning_notes.md`.
+Scope is deliberately small: two non-negative continuous variables, two or three constraints, two families (production / profit maximisation with caps, and mixing / cost minimisation with minimum requirements). A null or negative result was considered acceptable.
 
-## Pilote de génération (étape 2)
+Detailed reports and the project log are in French: [results](reports/results.md), [diagnostic](reports/diagnostic_sens_contraintes.md), [learning notes](reports/learning_notes.md), [French README](README.fr.md).
 
-Depuis la racine du dépôt, dans l'environnement Python où les dépendances de `requirements.txt` sont installées, sous PowerShell :
+## Results (v1, executed)
 
-```powershell
-$env:PYTHONPATH = 'src'
-python -m lp_llm.generate
-```
+`Qwen/Qwen2.5-1.5B-Instruct` (pinned revision `989aa79`), LoRA r=16 on the attention projections (0.28 % of parameters), one epoch on 300 examples, 19 optimiser steps, 4 min 15 s on a single RTX 4060 (8 GB).
 
-Cette commande produit cinq exemples par famille, à deux contraintes, dans `runs/generation_pilot_v2/` :
+Strict scoring: same prompt, same greedy decoding and same statements before and after; no output repair; any invalid output counts as a failure.
 
-- `pilot.json` contient les références, les résultats bruts de HiGHS et les diagnostics de toutes les tentatives. Pour chaque sommet admis que l'on retrouve exactement par ses contraintes actives, `exact_result` donne la solution, l'objectif et les écarts en fractions sous forme de chaînes. Les écarts du diagnostic à quelques unités d'arrondi de zéro sont affichés à zéro après le contrôle de faisabilité.
-- `review.md` présente les énoncés, les résultats et le statut de relecture. Le registre `reviews/pilot_v2.json` associe la validation de Marc à l'empreinte de la graine, de l'énoncé et de la référence. Une modification de ces éléments demande une nouvelle relecture.
-- `failure.json` : écrit uniquement si le plafond de tentatives est atteint, avec les références tentées et leurs diagnostics.
+| Metric | Synthetic test, base | Synthetic test, LoRA | Independent set, base | Independent set, LoRA |
+| --- | ---: | ---: | ---: | ---: |
+| Schema-valid JSON | 0/80 | 77/80 | 0/20 | 18/20 |
+| Exact formulation | 0/80 | 35/80 | 0/20 | 5/20 |
+| Predicted problem solved | 0/80 | 77/80 | 0/20 | 17/20 |
+| Optimal on the reference problem | 0/80 | 37/80 | 0/20 | 8/20 |
 
-Le profil `configs/pilot_v2.json` fixe trois exemples ciblés puis deux tirages sans condition géométrique supplémentaire par famille. Les cas ciblés exigent x1 et x2 strictement supérieurs à `1e-6`, ainsi que deux contraintes actives selon les tolérances du contrat. Les quatre cas libres suivent seulement l'admission numérique habituelle et peuvent aussi satisfaire naturellement la géométrie ciblée. Les motifs de rejet distinguent admission numérique et sélection géométrique. Le plafond reste de 100 tentatives par exemple demandé.
+The base model wraps almost every answer in Markdown fences despite the instruction. With the fences stripped (diagnostic only, not the official score), it reaches 10/80 and 1/20 exact formulations. Part of the gain is therefore format; the rest is formulation.
 
-`geometry_matches_target` vaut `null` pour un cas libre. `interior_two_active` décrit la géométrie observée sur tout cas admis numériquement. Les tentatives v2 utilisent les graines 42 à 82 dans l'ordre, production puis mélange. Les 31 graines absentes de la liste des exemples ont été rejetées par le filtre géométrique. Chaque tentative utilise son propre `random.Random(seed)`. `--per-family` permet de modifier la taille du pilote et `--pilot-config` permet de choisir un autre profil.
+**Main failure: mixing problems, 0/40 on the synthetic test.** Coefficients are right, but minimum requirements (`>=`) are written as caps (`<=`). A teacher-forcing probe (`src/lp_llm/probe.py`) shows that everything hinges on the sense of the first constraint; later constraints copy it with probability ≥ 0.99. Two causes:
 
-Le premier pilote reste archivé dans `runs/generation_pilot_v1/`. La graine 51 donne le même tirage numérique dans `pilot_mixing_005` de la v1 et `pilot_production_001` de la v2, avec l'objectif et les inégalités de leurs familles respectives. Pour un bilan commun aux deux versions, compter ce tirage une fois.
+1. Under-learning: after 19 steps, P(`>=`) at that position is only 0.54 on the training examples themselves (0.001 for the base model). The mean loss (0.029) hides it, since one token weighs about 1 % of an example's loss.
+2. Decoding bias: the `repetition_penalty=1.1` inherited from the model's generation config also penalises prompt tokens. The instruction contains the token ` ">` but not ` "<`, so only `>=` is penalised. The argmax becomes `<=` in 30/30 validation cases.
 
-Les candidats `needs_review` sont utilisables uniquement pour ce développement. Les exemples portent `split: development` et ne sont pas destinés aux tests finaux. Les contraintes inactives sont consignées ; inactivité à l'optimum ne signifie pas redondance. Aucune recherche de redondance générale ni exigence d'optimum unique n'est appliquée.
+The penalised probe predicts the generated first sense in 78/78 readable synthetic outputs.
 
-Marc a comparé les dix énoncés au JSON et recalculé les solutions, les objectifs, les écarts et les contraintes actives. Le rapport signale la redondance de la contrainte P de `pilot_mixing_005`, impliquée par la contrainte Q et les bornes.
+## Method
 
-## Dossier de validation
+- **Data.** 16 human-reviewed templates, assigned to train / validation / test by lineage *before* sampling (8 / 4 / 4), giving 300 / 60 / 80 examples. Seeded generation, HiGHS-based admission (feasible, bounded, numerically clean), no duplicate text or normalised formulation across splits, SHA-256 hashes in `data/corpus_v1_manifest.json`. The synthetic test is balanced between optima on an axis and optima with both variables positive.
+- **Independent set.** `data/human_test.jsonl`: 20 statements written outside the templates by an AI assistant (Codex), with references checked against a second transcription, HiGHS and an exact rational vertex enumeration. Eight mix caps and minimums; "linear" is absent from three. Never used for training or checkpoint selection.
+- **Training.** Plain PyTorch loop with Transformers and PEFT, BF16, gradient checkpointing, lr 1e-4, effective batch 16. The loss covers only the target JSON and the end token; prompt and padding get label `-100`. The mask was verified by decoding the supervised tokens of all 360 training and validation examples.
+- **Evaluator** (`src/lp_llm/verify.py`), four independent levels:
+  1. JSON conforming to the schema;
+  2. exact formulation after normalisation (constraint order, `>=` → `<=`, common positive factors);
+  3. the predicted problem is solved;
+  4. the predicted solution is feasible and optimal **on the reference problem**, with relative tolerances. Solution vectors are not compared, since optima can be multiple.
 
-Le dossier `reviews/validation_pilote_v2/` contient le rapport d'anomalies et de relecture, le PDF à valider et sa source LaTeX. Chaque page reprend un énoncé, sa formulation mathématique et son JSON. La comparaison se fonde sur une transcription indépendante des énoncés.
+  Level 4 can succeed while level 2 fails: three independent cases reach the reference optimum despite an omitted constraint.
 
-Après avoir généré le pilote, régénérer le dossier depuis la racine du dépôt.
+## Limitations
 
-```powershell
-$env:PYTHONPATH = 'src'
-python -m lp_llm.audit_pilot
-tectonic --untrusted reviews/validation_pilote_v2/validation.tex
-```
+- Toy scale: 2 variables, 2–3 constraints, 300 training examples, one seed. With 20 independent cases, a difference of a few cases is not significant.
+- In corpus v1, each family uses a single inequality sense. The adapter learned that correlation, which hurts statements mixing caps and minimums (1/8).
+- The synthetic test ran in batches of 8 with left padding, the independent set one case at a time. On 8 control cases the scores match, but 2 of 8 texts differ.
+- The diagnostic was made after reading test outputs. A v2 re-evaluated on these tests would be an iteration, not a blind measurement.
 
-Le contrôle écrit le rapport même s'il détecte une anomalie. Compiler la source LaTeX après une exécution réussie du contrôle.
+## Next iteration (planned, not run)
 
-## Lot de test indépendant
+Protocol fixed before execution in the diagnostic report: E1, decoding without repetition penalty, measured on validation; E2, three epochs with one checkpoint per epoch, selection on validation exact formulation, then a single final evaluation on the tests.
 
-`data/human_test.jsonl` contient 20 cas rédigés par Codex sans réutiliser les gabarits du générateur. Le nom du fichier suit le plan initial. Une relecture par Marc reste à consigner.
+## Reproduce
 
-- 10 cas de production et 10 cas d'achat ou de mélange. Chaque famille compte cinq cas à deux contraintes et cinq à trois contraintes. Huit cas combinent des plafonds et des minimums. Cinq optima sont sur un axe.
-- Chaque ligne contient `id`, `split`, `family`, `statement` et `reference`. Seul `statement` est transmis au modèle avec la consigne commune. Le vérificateur utilise `reference` pour la notation. Ce lot est réservé à la comparaison avant/après LoRA.
-- Marc a retiré le mot « linear » dans `independent_mixing_004`, `independent_mixing_009` et `independent_mixing_010`. La consigne commune précisera le format JSON attendu sans employer « linear program » ni « LP ». Présenter les résultats de ces trois cas individuellement.
-- Les 20 références ont été comparées à une seconde transcription des énoncés et résolues avec HiGHS. Un calcul rationnel par énumération des sommets a retrouvé les 20 solutions et objectifs. Aucun doublon numérique détecté dans le lot, avec les exemples retenus des pilotes v1 et v2 ou avec le corpus synthétique v1.
-- Empreinte SHA-256 de cette version (UTF-8, fins de ligne LF) `9d3ddd8e2d3fd240fa1499991c7b6fa1bbe6155640aea221cd02039ffcc6b5ea`. Toute correction de l'énoncé ou de la référence doit être tracée et appliquée aux deux évaluations.
-
-Pour mesurer le modèle de base à partir du cache local du projet sur GPU CUDA, sous PowerShell.
-
-```powershell
-$env:PYTHONPATH = 'src'
-python -m lp_llm.evaluate
-```
-
-Le script utilise la révision de Qwen des notebooks, le décodage glouton et un maximum de 256 nouveaux tokens. Les réponses brutes, la consigne et les quatre scores sont écrits dans `runs/base_independent_v1.json`. Pour relancer la mesure, indiquer un autre fichier avec `--output`. Le notebook `evaluate_demo.ipynb` affiche la mesure archivée et permet d'inspecter une réponse brute et son corrigé. Il peut aussi relancer le même code sur GPU.
-
-## Corpus synthétique v1
-
-Les fichiers définitifs sont `data/train.jsonl` (300 exemples), `data/validation.jsonl` (60) et `data/test.jsonl` (80). Le manifeste `data/corpus_v1_manifest.json` consigne les empreintes, les graines et les affectations. Les trois JSONL sont identiques à ceux de l'aperçu audité par Marc.
+PowerShell, from the repository root, with the dependencies of `requirements.txt` installed:
 
 ```powershell
 $env:PYTHONPATH = 'src'
-python -m lp_llm.corpus --output runs/corpus_v1_reproduction
-```
-
-La commande régénère les lots à partir de `templates/accepted.json`. L'aperçu et le dossier de relecture sont archivés dans `runs/corpus_v1_preview/`.
-
-Les optima à deux variables positives représentent 65/300 en entraînement (21,7 %), 16/60 en validation (26,7 %) et 40/80 en test synthétique (50 %). Le test est équilibré par construction pour couvrir les deux géométries dans chaque combinaison de famille et de nombre de contraintes. Les 176 rejets géométriques concernent ce test. Pour interpréter son score global, le rapport donnera aussi les résultats par géométrie.
-
-## Entraînement LoRA
-
-Depuis la racine, sous PowerShell, vérifier le masque de loss avec le tokenizer en cache. Cette commande contrôle les empreintes du train et de la validation, puis affiche les tokens supervisés de deux exemples de longueurs différentes.
-
-```powershell
-$env:PYTHONPATH = 'src'
-python -m lp_llm.train --check-only
-```
-
-Pour entraîner une époque en BF16 sur CUDA, puis évaluer l'adaptateur avec le protocole du modèle de base.
-
-```powershell
-python -m lp_llm.train
+python -m lp_llm.corpus --output runs/corpus_v1_reproduction   # regenerate the splits
+python -m lp_llm.train --check-only                             # check hashes and loss mask
+python -m lp_llm.train                                          # one epoch, BF16, CUDA
+python -m lp_llm.evaluate                                       # base model, independent set
 python -m lp_llm.evaluate --adapter runs/lora_v1 --output runs/lora_independent_v1.json
-```
-
-La configuration est dans `configs/sft_lora.json`. Le script sauvegarde l'adaptateur et les mesures d'entraînement dans `runs/lora_v1/`. La loss est calculée sur le JSON et son marqueur de fin. Le prompt et le padding reçoivent le label `-100`.
-
-La comparaison exécutée sur le lot indépendant utilise les archives `runs/base_independent_v1.json` et `runs/lora_independent_v1.json`. Les deux exécutions partagent la même révision, la même consigne et les mêmes réglages de génération. Les quatre mesures et les erreurs restantes sont consignées dans les notes.
-
-Pour reproduire les deux passages du test synthétique, utiliser les mêmes lots de huit et deux fichiers de sortie distincts.
-
-```powershell
-python -m lp_llm.evaluate --dataset data/test.jsonl --batch-size 8 --output runs/base_synthetic_reproduction.json
 python -m lp_llm.evaluate --dataset data/test.jsonl --batch-size 8 --adapter runs/lora_v1 --output runs/lora_synthetic_reproduction.json
+python -m pytest -q -p no:cacheprovider                         # 90 passed, 1 xfailed
 ```
 
-## Tests
+Configuration in `configs/sft_lora.json`. Raw predictions, training log and probe output are versioned in `runs/`; adapter weights (17 MB) are not. Versions recorded for the v1 run: torch 2.8.0+cu128, transformers 5.22.1, peft 0.21.2, Windows 11, RTX 4060.
 
-```powershell
-python -m pytest -q -p no:cacheprovider
+## Layout
+
+```text
+src/lp_llm/   schema, solver (JSON -> linprog), generate/corpus, train, evaluate, verify, probe
+data/         train / validation / test / human_test (.jsonl) and corpus manifest
+templates/    reviewed templates
+reports/      results, diagnostic, learning notes (French)
+runs/         predictions, training log, probe output
+tests/        schema, solver, generator, corpus and verifier tests
 ```
-
-Les tests couvrent le schéma, le solveur, le pilote et le vérificateur. Un test montre qu'un second membre erroné sur une contrainte inactive peut conserver le même optimum tout en faisant échouer la comparaison de formulation. Un test du solveur volontairement faux est marqué `xfail`.
