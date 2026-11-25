@@ -3,6 +3,16 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 25 novembre 2026 — Diagnostic de l'inversion `>=` → `<=` en mélange
+
+Rapport complet : `reports/diagnostic_sens_contraintes.md`. Sonde `src/lp_llm/probe.py` exécutée sur les 4 lots, sortie dans `runs/probe_sense_lora_v1.json`.
+
+- L'échec tient au sens de la **première** contrainte. Les suivantes recopient ce sens avec P ≥ 0,99.
+- **Sous-apprentissage.** Au premier sens de mélange, P(`>=`) vaut 0,001 pour le modèle de base, puis 0,54 sur le train et 0,35 en validation après LoRA v1 (19 pas).
+- **Biais de décodage.** `evaluate.py` hérite de `repetition_penalty=1.1`, appliquée au prompt compris. Le token ` ">` figure dans la consigne et ` "<` non. Avec la pénalité, l'argmax du premier sens est correct dans 0/30 cas de validation et 0/40 du test synthétique.
+- La sonde pénalisée prédit le premier sens généré dans 78/78 JSON lisibles du test synthétique et 19/20 du test indépendant.
+- Prévu, protocole fixé dans le rapport : E1, décodage sans pénalité évalué sur la validation ; E2, 3 époques avec un checkpoint par époque, sélection sur la formulation exacte en validation, puis une seule évaluation finale sur les tests.
+
 ## 25 novembre 2026 — Comparaison sur les 80 cas synthétiques
 
 Les deux passages utilisent le même fichier `data/test.jsonl`, vérifié contre le manifeste, la même révision de Qwen et la même consigne. Le décodage est glouton. Pour accélérer le calcul, les deux passages utilisent des lots de huit avec padding à gauche. Sur huit cas indépendants servant à contrôler ce mode d'exécution avec le modèle de base, six sorties sont identiques à la génération individuelle et les huit scores stricts restent identiques. Les résultats ci-dessous comparent les deux modèles dans les mêmes lots. Les sorties sont dans `runs/base_synthetic_v1.json` et `runs/lora_synthetic_v1.json`. Les passages ont pris respectivement 176 s et 209 s.
