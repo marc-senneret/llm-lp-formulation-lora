@@ -9,9 +9,18 @@ SCHEMA = {
             "bounds": list
         }
 
+def _unique_object(pairs: list) -> dict:
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Duplicate key: {key!r}")
+        result[key] = value
+    return result
+
+
 def get_valid_json(json_string: str) -> tuple[bool, Any]:
     try:
-        data = json.loads(json_string)
+        data = json.loads(json_string, object_pairs_hook=_unique_object)
         return True, data
     except (ValueError, TypeError, RecursionError) as e:
         return False,  f"Invalid JSON: {e}"

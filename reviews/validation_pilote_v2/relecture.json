@@ -1,0 +1,25 @@
+{
+  "references": {
+    "pilot_production_001": {"objective": ["max", 16, 33], "constraints": [[9, 3, "<=", 82], [4, 9, "<=", 85]], "bounds": [[0, null], [0, null]]},
+    "pilot_production_002": {"objective": ["max", 18, 4], "constraints": [[9, 8, "<=", 114], [7, 1, "<=", 55]], "bounds": [[0, null], [0, null]]},
+    "pilot_production_003": {"objective": ["max", 48, 30], "constraints": [[9, 2, "<=", 175], [4, 7, "<=", 140]], "bounds": [[0, null], [0, null]]},
+    "pilot_production_004": {"objective": ["max", 44, 3], "constraints": [[2, 3, "<=", 37], [6, 6, "<=", 160]], "bounds": [[0, null], [0, null]]},
+    "pilot_production_005": {"objective": ["max", 8, 19], "constraints": [[8, 8, "<=", 54], [6, 2, "<=", 59]], "bounds": [[0, null], [0, null]]},
+    "pilot_mixing_001": {"objective": ["min", 40, 33], "constraints": [[2, 6, ">=", 50], [5, 3, ">=", 75]], "bounds": [[0, null], [0, null]]},
+    "pilot_mixing_002": {"objective": ["min", 24, 30], "constraints": [[7, 4, ">=", 96], [1, 7, ">=", 80]], "bounds": [[0, null], [0, null]]},
+    "pilot_mixing_003": {"objective": ["min", 18, 26], "constraints": [[9, 7, ">=", 114], [6, 9, ">=", 122]], "bounds": [[0, null], [0, null]]},
+    "pilot_mixing_004": {"objective": ["min", 33, 30], "constraints": [[6, 9, ">=", 156], [7, 8, ">=", 24]], "bounds": [[0, null], [0, null]]},
+    "pilot_mixing_005": {"objective": ["min", 10, 50], "constraints": [[8, 9, ">=", 94], [3, 3, ">=", 194]], "bounds": [[0, null], [0, null]]}
+  },
+  "marc_review": "Le 21 novembre 2026, Marc a confirmé avoir vérifié les dix problèmes du PDF `validation.pdf`. Aucune correction supplémentaire signalée.",
+  "observations": [
+    "Les dix énoncés et leurs formulations ont été relus. Les coefficients, les seconds membres, les sens des contraintes, l'objectif et les bornes correspondent.",
+    "Consigne à clarifier avant réutilisation dans le corpus. Les dix énoncés d'origine demandent de déterminer des quantités. Le dossier précise que le travail demandé est de formuler le programme linéaire. Les énoncés d'origine sont reproduits intégralement pour la validation.",
+    "`pilot_production_004` : la limite de bois de 160 kg est redondante. La limite de travail et les bornes impliquent x1 + x2 ≤ 37/2, donc au plus 111 kg de bois.",
+    "`pilot_production_005` : la limite de bois de 59 kg est redondante. La limite de travail impose x1 + x2 ≤ 54/8, donc au plus 40,5 kg de bois.",
+    "`pilot_mixing_004` : le minimum de 24 g de Q est redondant. La ligne P et les bornes impliquent Q ≥ (8/9) × 156 = 416/3 g.",
+    "`pilot_mixing_005` : le minimum de 94 g de P est redondant. La ligne Q et les bornes impliquent P ≥ (8/3) × 194 = 1552/3 g.",
+    "Les quatre contraintes redondantes figurent dans les énoncés et doivent figurer dans les JSON attendus. Elles permettent de vérifier qu'une omission peut passer inaperçue si l'on examine seulement l'optimum.",
+    "`pilot_production_001` partage son tirage numérique avec `pilot_mixing_005` de l'archive v1 (graine 51). Les dix cas de la v2 sont distincts."
+  ]
+}

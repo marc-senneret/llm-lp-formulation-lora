@@ -29,10 +29,24 @@ Les candidats `needs_review` sont utilisables uniquement pour ce développement.
 
 Marc a comparé les dix énoncés au JSON et recalculé les solutions, les objectifs, les écarts et les contraintes actives. Le rapport signale la redondance de la contrainte P de `pilot_mixing_005`, impliquée par la contrainte Q et les bornes.
 
+## Dossier de validation
+
+Le dossier `reviews/validation_pilote_v2/` contient le rapport d'anomalies et de relecture, le PDF à valider et sa source LaTeX. Chaque page reprend un énoncé, sa formulation mathématique et son JSON. La comparaison se fonde sur une transcription indépendante des énoncés.
+
+Après avoir généré le pilote, régénérer le dossier depuis la racine du dépôt.
+
+```powershell
+$env:PYTHONPATH = 'src'
+python -m lp_llm.audit_pilot
+tectonic --untrusted reviews/validation_pilote_v2/validation.tex
+```
+
+Le contrôle écrit le rapport même s'il détecte une anomalie. Compiler la source LaTeX après une exécution réussie du contrôle.
+
 ## Tests
 
 ```powershell
 python -m pytest -q -p no:cacheprovider
 ```
 
-Les tests couvrent le schéma, le solveur et le pilote, notamment sa reproductibilité, les résultats numériques inadmissibles, les champs manquants, les quotas géométriques et l'arrêt au plafond de tentatives. Un exemple montre qu'un second membre erroné sur une contrainte lâche peut conserver le même optimum : la comparaison de formulation entière reste nécessaire et reste à implémenter. Un test du solveur volontairement faux est marqué `xfail`.
+Les tests couvrent le schéma, le solveur, le pilote et le vérificateur. Un test montre qu'un second membre erroné sur une contrainte inactive peut conserver le même optimum tout en faisant échouer la comparaison de formulation. Un test du solveur volontairement faux est marqué `xfail`.

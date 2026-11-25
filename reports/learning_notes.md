@@ -3,6 +3,16 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 21 novembre 2026 — Relecture du PDF par Marc
+
+- Marc a confirmé avoir vérifié les dix problèmes du dossier de validation du pilote v2. Aucune correction supplémentaire signalée. La relecture est consignée dans `reviews/validation_pilote_v2/rapport.md`.
+
+## 20 novembre 2026 — Dossier de validation du pilote v2
+
+- Le vérificateur réutilise le parseur, le schéma et le solveur. Il compare le JSON du pilote à une transcription indépendante des énoncés et contrôle la faisabilité et l'optimalité sur cette référence. Les dix cas passent les quatre contrôles. Une modification volontaire d'un second membre apparaît dans le rapport et bloque la production d'une nouvelle source LaTeX.
+- Le rapport dans `reviews/validation_pilote_v2/` réunit les anomalies automatiques et les observations de relecture. Le PDF reprend les dix cas avec l'énoncé, le programme mathématique et son JSON.
+- Suite exécutée avec `python -m pytest -q -p no:cacheprovider`. 85 tests réussis et 1 échec attendu.
+
 ## 18 novembre 2026 — Validation du pilote v2 par Marc
 
 - Marc a comparé automatiquement les dix énoncés à leurs références JSON, coefficients, seconds membres, sens des contraintes et objectif. Il a résolu de nouveau chaque LP et retrouvé les solutions, objectifs, écarts et contraintes actives consignés. Six cas ont les deux contraintes actives, contre un en v1. Les dix cas sont marqués `reviewed`. Le registre `reviews/pilot_v2.json` attache la validation aux énoncés et références relus. La qualification des templates pour le corpus reste à faire.

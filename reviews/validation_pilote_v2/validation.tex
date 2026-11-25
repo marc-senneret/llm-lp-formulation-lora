@@ -1,0 +1,301 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=23mm]{geometry}
+\usepackage{xcolor}
+\definecolor{heading}{HTML}{184154}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\newcommand{\rubrique}[1]{\par\medskip{\large\bfseries\color{heading}#1}\par\smallskip}
+\begin{document}
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 01\enspace/\enspace 10}
+\texttt{pilot\_production\_001} \hfill Graine 51
+\rubrique{Énoncé d'origine}
+A workshop produces tables and chairs. Let x1 be the number of tables produced and x2 the number of chairs produced. Both quantities may take any nonnegative real value, including fractional values. The profit per table is 16 EUR, and the profit per chair is 33 EUR. Producing each table requires 9 h of labor and 4 kg of wood. Producing each chair requires 3 h of labor and 9 kg of wood. At most 82 h of labor and 85 kg of wood are available. Determine the production quantities that maximize total profit.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\max_{x_1,x_2\in\mathbb{R}}\quad& 16x_1 +33x_2 \\
+\text{s.c.}\quad & 9x_1 +3x_2 \le 82 \\
+\quad & 4x_1 +9x_2 \le 85 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "max", "coefficients": [16, 33]},
+  "constraints": [
+    {"coefficients": [9, 3], "sense": "<=", "rhs": 82},
+    {"coefficients": [4, 9], "sense": "<=", "rhs": 85}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 02\enspace/\enspace 10}
+\texttt{pilot\_production\_002} \hfill Graine 52
+\rubrique{Énoncé d'origine}
+A workshop produces tables and chairs. Let x1 be the number of tables produced and x2 the number of chairs produced. Both quantities may take any nonnegative real value, including fractional values. The profit per table is 18 EUR, and the profit per chair is 4 EUR. Producing each table requires 9 h of labor and 7 kg of wood. Producing each chair requires 8 h of labor and 1 kg of wood. At most 114 h of labor and 55 kg of wood are available. Determine the production quantities that maximize total profit.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\max_{x_1,x_2\in\mathbb{R}}\quad& 18x_1 +4x_2 \\
+\text{s.c.}\quad & 9x_1 +8x_2 \le 114 \\
+\quad & 7x_1 +x_2 \le 55 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "max", "coefficients": [18, 4]},
+  "constraints": [
+    {"coefficients": [9, 8], "sense": "<=", "rhs": 114},
+    {"coefficients": [7, 1], "sense": "<=", "rhs": 55}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 03\enspace/\enspace 10}
+\texttt{pilot\_production\_003} \hfill Graine 68
+\rubrique{Énoncé d'origine}
+A workshop produces tables and chairs. Let x1 be the number of tables produced and x2 the number of chairs produced. Both quantities may take any nonnegative real value, including fractional values. The profit per table is 48 EUR, and the profit per chair is 30 EUR. Producing each table requires 9 h of labor and 4 kg of wood. Producing each chair requires 2 h of labor and 7 kg of wood. At most 175 h of labor and 140 kg of wood are available. Determine the production quantities that maximize total profit.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\max_{x_1,x_2\in\mathbb{R}}\quad& 48x_1 +30x_2 \\
+\text{s.c.}\quad & 9x_1 +2x_2 \le 175 \\
+\quad & 4x_1 +7x_2 \le 140 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "max", "coefficients": [48, 30]},
+  "constraints": [
+    {"coefficients": [9, 2], "sense": "<=", "rhs": 175},
+    {"coefficients": [4, 7], "sense": "<=", "rhs": 140}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 04\enspace/\enspace 10}
+\texttt{pilot\_production\_004} \hfill Graine 69
+\rubrique{Énoncé d'origine}
+A workshop produces tables and chairs. Let x1 be the number of tables produced and x2 the number of chairs produced. Both quantities may take any nonnegative real value, including fractional values. The profit per table is 44 EUR, and the profit per chair is 3 EUR. Producing each table requires 2 h of labor and 6 kg of wood. Producing each chair requires 3 h of labor and 6 kg of wood. At most 37 h of labor and 160 kg of wood are available. Determine the production quantities that maximize total profit.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\max_{x_1,x_2\in\mathbb{R}}\quad& 44x_1 +3x_2 \\
+\text{s.c.}\quad & 2x_1 +3x_2 \le 37 \\
+\quad & 6x_1 +6x_2 \le 160 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "max", "coefficients": [44, 3]},
+  "constraints": [
+    {"coefficients": [2, 3], "sense": "<=", "rhs": 37},
+    {"coefficients": [6, 6], "sense": "<=", "rhs": 160}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 05\enspace/\enspace 10}
+\texttt{pilot\_production\_005} \hfill Graine 70
+\rubrique{Énoncé d'origine}
+A workshop produces tables and chairs. Let x1 be the number of tables produced and x2 the number of chairs produced. Both quantities may take any nonnegative real value, including fractional values. The profit per table is 8 EUR, and the profit per chair is 19 EUR. Producing each table requires 8 h of labor and 6 kg of wood. Producing each chair requires 8 h of labor and 2 kg of wood. At most 54 h of labor and 59 kg of wood are available. Determine the production quantities that maximize total profit.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\max_{x_1,x_2\in\mathbb{R}}\quad& 8x_1 +19x_2 \\
+\text{s.c.}\quad & 8x_1 +8x_2 \le 54 \\
+\quad & 6x_1 +2x_2 \le 59 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "max", "coefficients": [8, 19]},
+  "constraints": [
+    {"coefficients": [8, 8], "sense": "<=", "rhs": 54},
+    {"coefficients": [6, 2], "sense": "<=", "rhs": 59}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 06\enspace/\enspace 10}
+\texttt{pilot\_mixing\_001} \hfill Graine 74
+\rubrique{Énoncé d'origine}
+A farm purchases two feed supplements, supplement A and supplement B. Let x1 be the amount of supplement A purchased, measured in kg, and x2 the amount of supplement B purchased, measured in kg. Both amounts may take any nonnegative real value, including fractional values. The cost per kg is 40 EUR for supplement A and 33 EUR for supplement B. Each kg of supplement A supplies 2 g of nutrient P, and each kg of supplement B supplies 6 g of nutrient P. The total amount purchased must supply at least 50 g of nutrient P. Each kg of supplement A supplies 5 g of nutrient Q, and each kg of supplement B supplies 3 g of nutrient Q. The total amount purchased must supply at least 75 g of nutrient Q. Determine the amounts of the two supplements to purchase to minimize total cost.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\min_{x_1,x_2\in\mathbb{R}}\quad& 40x_1 +33x_2 \\
+\text{s.c.}\quad & 2x_1 +6x_2 \ge 50 \\
+\quad & 5x_1 +3x_2 \ge 75 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "min", "coefficients": [40, 33]},
+  "constraints": [
+    {"coefficients": [2, 6], "sense": ">=", "rhs": 50},
+    {"coefficients": [5, 3], "sense": ">=", "rhs": 75}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 07\enspace/\enspace 10}
+\texttt{pilot\_mixing\_002} \hfill Graine 76
+\rubrique{Énoncé d'origine}
+A farm purchases two feed supplements, supplement A and supplement B. Let x1 be the amount of supplement A purchased, measured in kg, and x2 the amount of supplement B purchased, measured in kg. Both amounts may take any nonnegative real value, including fractional values. The cost per kg is 24 EUR for supplement A and 30 EUR for supplement B. Each kg of supplement A supplies 7 g of nutrient P, and each kg of supplement B supplies 4 g of nutrient P. The total amount purchased must supply at least 96 g of nutrient P. Each kg of supplement A supplies 1 g of nutrient Q, and each kg of supplement B supplies 7 g of nutrient Q. The total amount purchased must supply at least 80 g of nutrient Q. Determine the amounts of the two supplements to purchase to minimize total cost.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\min_{x_1,x_2\in\mathbb{R}}\quad& 24x_1 +30x_2 \\
+\text{s.c.}\quad & 7x_1 +4x_2 \ge 96 \\
+\quad & x_1 +7x_2 \ge 80 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "min", "coefficients": [24, 30]},
+  "constraints": [
+    {"coefficients": [7, 4], "sense": ">=", "rhs": 96},
+    {"coefficients": [1, 7], "sense": ">=", "rhs": 80}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 08\enspace/\enspace 10}
+\texttt{pilot\_mixing\_003} \hfill Graine 80
+\rubrique{Énoncé d'origine}
+A farm purchases two feed supplements, supplement A and supplement B. Let x1 be the amount of supplement A purchased, measured in kg, and x2 the amount of supplement B purchased, measured in kg. Both amounts may take any nonnegative real value, including fractional values. The cost per kg is 18 EUR for supplement A and 26 EUR for supplement B. Each kg of supplement A supplies 9 g of nutrient P, and each kg of supplement B supplies 7 g of nutrient P. The total amount purchased must supply at least 114 g of nutrient P. Each kg of supplement A supplies 6 g of nutrient Q, and each kg of supplement B supplies 9 g of nutrient Q. The total amount purchased must supply at least 122 g of nutrient Q. Determine the amounts of the two supplements to purchase to minimize total cost.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\min_{x_1,x_2\in\mathbb{R}}\quad& 18x_1 +26x_2 \\
+\text{s.c.}\quad & 9x_1 +7x_2 \ge 114 \\
+\quad & 6x_1 +9x_2 \ge 122 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "min", "coefficients": [18, 26]},
+  "constraints": [
+    {"coefficients": [9, 7], "sense": ">=", "rhs": 114},
+    {"coefficients": [6, 9], "sense": ">=", "rhs": 122}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 09\enspace/\enspace 10}
+\texttt{pilot\_mixing\_004} \hfill Graine 81
+\rubrique{Énoncé d'origine}
+A farm purchases two feed supplements, supplement A and supplement B. Let x1 be the amount of supplement A purchased, measured in kg, and x2 the amount of supplement B purchased, measured in kg. Both amounts may take any nonnegative real value, including fractional values. The cost per kg is 33 EUR for supplement A and 30 EUR for supplement B. Each kg of supplement A supplies 6 g of nutrient P, and each kg of supplement B supplies 9 g of nutrient P. The total amount purchased must supply at least 156 g of nutrient P. Each kg of supplement A supplies 7 g of nutrient Q, and each kg of supplement B supplies 8 g of nutrient Q. The total amount purchased must supply at least 24 g of nutrient Q. Determine the amounts of the two supplements to purchase to minimize total cost.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\min_{x_1,x_2\in\mathbb{R}}\quad& 33x_1 +30x_2 \\
+\text{s.c.}\quad & 6x_1 +9x_2 \ge 156 \\
+\quad & 7x_1 +8x_2 \ge 24 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "min", "coefficients": [33, 30]},
+  "constraints": [
+    {"coefficients": [6, 9], "sense": ">=", "rhs": 156},
+    {"coefficients": [7, 8], "sense": ">=", "rhs": 24}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\newpage
+{\small\color{heading}\textbf{VALIDATION DU PILOTE V2}}
+\section*{Cas 10\enspace/\enspace 10}
+\texttt{pilot\_mixing\_005} \hfill Graine 82
+\rubrique{Énoncé d'origine}
+A farm purchases two feed supplements, supplement A and supplement B. Let x1 be the amount of supplement A purchased, measured in kg, and x2 the amount of supplement B purchased, measured in kg. Both amounts may take any nonnegative real value, including fractional values. The cost per kg is 10 EUR for supplement A and 50 EUR for supplement B. Each kg of supplement A supplies 8 g of nutrient P, and each kg of supplement B supplies 9 g of nutrient P. The total amount purchased must supply at least 94 g of nutrient P. Each kg of supplement A supplies 3 g of nutrient Q, and each kg of supplement B supplies 3 g of nutrient Q. The total amount purchased must supply at least 194 g of nutrient Q. Determine the amounts of the two supplements to purchase to minimize total cost.
+
+\textit{Pour cette validation, formuler le programme linéaire.}
+\rubrique{Formulation en programmation linéaire}
+\[\begin{aligned}
+\min_{x_1,x_2\in\mathbb{R}}\quad& 10x_1 +50x_2 \\
+\text{s.c.}\quad & 8x_1 +9x_2 \ge 94 \\
+\quad & 3x_1 +3x_2 \ge 194 \\
+& x_1 \ge 0 \\
+& x_2 \ge 0 \\
+\end{aligned}\]
+\rubrique{JSON formulé}
+{\small\begin{verbatim}
+{
+  "variables": ["x1", "x2"],
+  "objective": {"sense": "min", "coefficients": [10, 50]},
+  "constraints": [
+    {"coefficients": [8, 9], "sense": ">=", "rhs": 94},
+    {"coefficients": [3, 3], "sense": ">=", "rhs": 194}
+  ],
+  "bounds": [[0, null], [0, null]]
+}
+\end{verbatim}}
+\vfill\textbf{Validation de Marc}\quad\rule{0.62\linewidth}{0.4pt}
+\end{document}
