@@ -3,6 +3,12 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 25 novembre 2026 — Lot de test indépendant
+
+- Codex a rédigé les 20 cas anglais de `data/human_test.jsonl` sans reprendre les gabarits du pilote. Les quatre combinaisons famille × nombre de contraintes comptent cinq cas chacune. Huit cas mêlent plafonds et minimums, et cinq ont un optimum sur un axe.
+- Les références correspondent à la seconde transcription des énoncés. Les 20 passent le vérificateur et un calcul exact aux sommets confirme les résultats de HiGHS. Le contrôle des doublons couvre le lot et les deux pilotes archivés. L'empreinte est consignée dans le README. La relecture par Marc et la comparaison avec le futur corpus restent à faire.
+- Marc a retiré « linear » dans trois énoncés de mélange pour voir si le modèle formule correctement le problème sans ce mot dans la consigne. Le contrôle par l'empreinte initiale confirme que les 20 références sont identiques. L'empreinte du lot modifié figure dans le README.
+
 ## 21 novembre 2026 — Relecture du PDF par Marc
 
 - Marc a confirmé avoir vérifié les dix problèmes du dossier de validation du pilote v2. Aucune correction supplémentaire signalée. La relecture est consignée dans `reviews/validation_pilote_v2/rapport.md`.

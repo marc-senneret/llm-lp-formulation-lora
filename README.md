@@ -43,6 +43,16 @@ tectonic --untrusted reviews/validation_pilote_v2/validation.tex
 
 Le contrôle écrit le rapport même s'il détecte une anomalie. Compiler la source LaTeX après une exécution réussie du contrôle.
 
+## Lot de test indépendant
+
+`data/human_test.jsonl` contient 20 cas rédigés par Codex sans réutiliser les gabarits du générateur. Le nom du fichier suit le plan initial. Une relecture par Marc reste à consigner.
+
+- 10 cas de production et 10 cas d'achat ou de mélange. Chaque famille compte cinq cas à deux contraintes et cinq à trois contraintes. Huit cas combinent des plafonds et des minimums. Cinq optima sont sur un axe.
+- Chaque ligne contient `id`, `split`, `family`, `statement` et `reference`. Seul `statement` est transmis au modèle avec la consigne commune. Le vérificateur utilise `reference` pour la notation. Ce lot est réservé à la comparaison avant/après LoRA.
+- Marc a retiré le mot « linear » dans `independent_mixing_004`, `independent_mixing_009` et `independent_mixing_010`. La consigne commune précisera le format JSON attendu sans employer « linear program » ni « LP ». Présenter les résultats de ces trois cas individuellement.
+- Les 20 références ont été comparées à une seconde transcription des énoncés et résolues avec HiGHS. Un calcul rationnel par énumération des sommets a retrouvé les 20 solutions et objectifs. Aucun doublon numérique détecté dans le lot ou avec les exemples retenus des pilotes v1 et v2. La comparaison avec le corpus synthétique se fera lorsqu'il sera généré.
+- Empreinte SHA-256 de cette version (UTF-8, fins de ligne LF) `9d3ddd8e2d3fd240fa1499991c7b6fa1bbe6155640aea221cd02039ffcc6b5ea`. Toute correction de l'énoncé ou de la référence doit être tracée et appliquée aux deux évaluations.
+
 ## Tests
 
 ```powershell

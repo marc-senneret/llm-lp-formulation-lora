@@ -1,6 +1,6 @@
 # Plan de génération du corpus
 
-**Statut au 18 novembre 2026.** Étape 1 documentée et vérifiée techniquement. Étape 2 exécutée et les dix cas de la v2 ont été validés par Marc. La v1 est conservée comme archive. Les étapes 3 à 8 restent à exécuter. L'admission des templates et la génération du corpus final restent à faire.
+**Statut au 25 novembre 2026.** Étape 1 documentée et vérifiée techniquement. Étape 2 exécutée et les dix cas de la v2 ont été validés par Marc. La v1 est conservée comme archive. Les étapes 3 à 7 restent à exécuter. À l'étape 8, les vingt cas du test indépendant sont rédigés et contrôlés. Leur relecture par Marc et la comparaison avec le futur corpus restent à consigner.
 
 **Mise à jour : 17 novembre 2026.** Marc autorise la rédaction de templates candidats par un LLM, puis leur filtrage et leur validation. Cette décision complète le cadrage initial, qui ne nécessitait pas de LLM externe. Le LLM produit des données textuelles, pas du code à exécuter.
 
@@ -149,21 +149,21 @@ Le LLM aide à produire une bibliothèque de templates à trous. Une fois celle-
 
 **Critère de passage :** contrôles obligatoires réussis, mutations ciblées détectées et audit humain consigné. Un simple passage du solveur ne suffit pas.
 
-## Étape 8 — Préparer et isoler le test humain
+## Étape 8 — Préparer et isoler le test indépendant
 
 **À faire**
 
-1. Marc écrit vingt problèmes en anglais indépendamment de la bibliothèque, idéalement dix par famille, couvrant deux et trois contraintes et plusieurs présentations. Garder les deux familles et deux variables continues non négatives. Inclure quelques cas qui rompent l'association systématique entre famille et sens des contraintes du générateur, par exemple un atelier avec capacité maximale et commande minimale. Identifier ces cas au gel et présenter leurs résultats par cas.
+1. Les vingt problèmes en anglais ont été rédigés par Codex à la demande de Marc, indépendamment de la bibliothèque. Le lot compte dix cas par famille, avec deux ou trois contraintes et plusieurs présentations. Huit cas combinent des plafonds et des minimums. Présenter leurs résultats par cas.
 2. Construire et relire les références ; vérifier schéma, faisabilité et bornitude avec le solveur, puis l'absence de doublons avec le corpus synthétique.
 3. Geler `data/human_test.jsonl`, ses références et son empreinte avant le fine-tuning. Ne pas utiliser ces cas pour les prompts du générateur, les templates, le checkpoint ou les réglages.
 4. Réserver ces cas à l'évaluation finale avant/après, avec le même protocole pour les deux modèles. Ne jamais transférer un échec vers l'entraînement. Tracer toute correction ultérieure d'annotation et l'appliquer aux deux évaluations.
 
-**Livrable :** vingt cas humains validés et gelés, avec provenance et empreinte.
+**Livrable :** vingt cas indépendants validés et gelés, avec provenance et empreinte.
 
 **Critère de passage :** test indépendant disponible avant l'entraînement, séparé des décisions de développement. Sa rédaction peut avancer pendant les étapes 3–7, sans réutiliser leurs templates.
 
 ## Ordre de travail et définition de terminé
 
-Prochain cycle : éprouver le vérificateur sur les cas de développement relus. Reformuler la consigne des témoins avant de qualifier la bibliothèque et relire les rendus modifiés. Enchaîner avec le gel des splits, la génération et l'audit. La rédaction du test humain peut avancer en parallèle. Après le gel des données, réaliser un entraînement principal et la comparaison appariée avant/après.
+Prochain cycle : préparer l'évaluation du modèle de base avec le vérificateur. Reformuler la consigne des témoins avant de qualifier la bibliothèque et relire les rendus modifiés. Enchaîner avec le gel des splits, la génération et l'audit. Après le gel des données, réaliser un entraînement principal et la comparaison appariée avant/après.
 
-Cette partie est terminée lorsque bibliothèque et splits sont gelés, JSONL régénérables, tests et audits exécutés, limites documentées et test humain isolé. Cela ne signifie pas que l'entraînement ou l'évaluation du modèle a été réalisé.
+Cette partie est terminée lorsque bibliothèque et splits sont gelés, JSONL régénérables, tests et audits exécutés, limites documentées et test indépendant isolé.
