@@ -53,6 +53,15 @@ Le contrôle écrit le rapport même s'il détecte une anomalie. Compiler la sou
 - Les 20 références ont été comparées à une seconde transcription des énoncés et résolues avec HiGHS. Un calcul rationnel par énumération des sommets a retrouvé les 20 solutions et objectifs. Aucun doublon numérique détecté dans le lot ou avec les exemples retenus des pilotes v1 et v2. La comparaison avec le corpus synthétique se fera lorsqu'il sera généré.
 - Empreinte SHA-256 de cette version (UTF-8, fins de ligne LF) `9d3ddd8e2d3fd240fa1499991c7b6fa1bbe6155640aea221cd02039ffcc6b5ea`. Toute correction de l'énoncé ou de la référence doit être tracée et appliquée aux deux évaluations.
 
+Pour mesurer le modèle de base à partir du cache local du projet sur GPU CUDA, sous PowerShell.
+
+```powershell
+$env:PYTHONPATH = 'src'
+python -m lp_llm.evaluate
+```
+
+Le script utilise la révision de Qwen des notebooks, le décodage glouton et un maximum de 256 nouveaux tokens. Les réponses brutes, la consigne et les quatre scores sont écrits dans `runs/base_independent_v1.json`. Pour relancer la mesure, indiquer un autre fichier avec `--output`. Le notebook `evaluate_demo.ipynb` affiche la mesure archivée et permet d'inspecter une réponse brute et son corrigé. Il peut aussi relancer le même code sur GPU.
+
 ## Tests
 
 ```powershell

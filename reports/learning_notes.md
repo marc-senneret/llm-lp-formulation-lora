@@ -3,6 +3,13 @@
 Journal du projet : décisions prises, raisons, ce qui a été réellement exécuté. 
 Les valeurs exactes de la machine sont dans `runs/computer_state.json`.
 
+## 25 novembre 2026 — Mesure de Qwen avant LoRA
+
+- Qwen2.5-1.5B-Instruct à la révision `989aa7980e4cf806f80c7fef2b1adb7bc71aa306`. Mesure sur 20 énoncés indépendants, en BF16 sur RTX 4060 avec PyTorch `2.8.0+cu128`, Transformers `5.22.1` et SciPy `1.16.1`. Décodage glouton, plafond de 256 nouveaux tokens et pénalité de répétition de 1,1 héritée de la configuration de Qwen. L'exécution a pris 252 s, chargement compris. Les vingt réponses se terminent par un token de fin.
+- Résultat strict sur les sorties brutes. JSON conforme au schéma **0/20**, formulation exacte **0/20**, résolution de la formulation prédite **0/20**, solution correcte sur la référence **0/20**. La consigne exacte, l'empreinte du lot et les prédictions sont dans `runs/base_independent_v1.json`.
+- Diagnostic en retirant seulement les délimiteurs des 18 blocs Markdown après la notation. Sur les 20 réponses, deux JSON restent illisibles, seize décrivent les bornes sous une forme incompatible avec le schéma et deux passent le schéma. `independent_production_006` contient la formulation exacte. `independent_production_007` passe le schéma mais donne un problème non borné, avec des signes erronés dans les contraintes.
+- Les trois cas de mélange sans « linear » échouent tous. Une fois les délimiteurs retirés, les JSON de `independent_mixing_004` et `independent_mixing_009` restent illisibles. `independent_mixing_010` donne des bornes invalides, inverse deux inégalités et omet le plafond de capacité. Sans comparaison appariée entre les deux rédactions des mêmes cas, cette mesure ne permet pas d'isoler l'effet du mot « linear ».
+
 ## 25 novembre 2026 — Lot de test indépendant
 
 - Codex a rédigé les 20 cas anglais de `data/human_test.jsonl` sans reprendre les gabarits du pilote. Les quatre combinaisons famille × nombre de contraintes comptent cinq cas chacune. Huit cas mêlent plafonds et minimums, et cinq ont un optimum sur un axe.
